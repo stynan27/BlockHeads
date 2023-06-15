@@ -6,9 +6,11 @@ function App() {
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
+        <h1 className='lego-regular'>BlockHeads App - LEGO style</h1>
+        <p className='lego-regular'>
+          LEGO{/*<span className='test'>@</span>*/}.
         </p>
+        {/*
         <a
           className="App-link"
           href="https://reactjs.org"
@@ -16,7 +18,7 @@ function App() {
           rel="noopener noreferrer"
         >
           Learn React
-        </a>
+        </a> */}
       </header>
     </div>
   );
