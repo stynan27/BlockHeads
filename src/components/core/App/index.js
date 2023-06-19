@@ -1,27 +1,29 @@
-import logo from '../../../assets/logo.svg';
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+
+import { WelcomeComponent } from '../../pages/Welcome';
+import { ErrorComponent } from '../../pages/Error';
+
 import './style.css';
 
-export function App() {
+export function AppComponent() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <h1 className='lego-regular'>BlockHeads App - LEGO style</h1>
-        <p className='lego-regular'>
-          LEGO{/*<span className='test'>@</span>*/}.
-        </p>
-        {/*
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a> */}
-      </header>
+    <div className="AppComponent">
+        <BrowserRouter>
+            {/* 
+                TODO: <Header/> 
+            */}
+            <Routes>
+                <Route path="/" element={<WelcomeComponent/>} />
+
+                {/* All other trafic to error page */}
+                <Route path="*" element={<ErrorComponent/>} />
+            </Routes>
+            {/* 
+                TODO: <Footer/> 
+            */}
+        </BrowserRouter>
     </div>
   );
 }
 
-export default App;
+export default AppComponent;
