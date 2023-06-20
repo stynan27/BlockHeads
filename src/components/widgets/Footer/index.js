@@ -10,7 +10,7 @@ export function FooterComponent() {
             style={{height: 80}}
         >
             <Row>
-                <Col className='FooterBody'>
+                <Col>
                     <h1>TODO: Footer goes here!</h1>
                 </Col>          
             </Row>
