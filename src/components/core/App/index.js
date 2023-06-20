@@ -1,28 +1,29 @@
+import { Container } from 'react-bootstrap';
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
-import { WelcomeComponent } from '../../pages/Welcome';
-import { ErrorComponent } from '../../pages/Error';
+import { WelcomePage } from '../../pages/Welcome';
+import { ErrorPage } from '../../pages/Error';
+import { HeaderComponent } from '../../widgets/Header';
+import { FooterComponent } from "../../widgets/Footer";
 
 import './style.css';
 
 export function AppComponent() {
   return (
-    <div className="AppComponent">
+    <Container fluid className="AppComponent vh-100 px-0">
+        <HeaderComponent/> 
+
         <BrowserRouter>
-            {/* 
-                TODO: <Header/> 
-            */}
             <Routes>
-                <Route path="/" element={<WelcomeComponent/>} />
+                <Route path="/" element={<WelcomePage/>} />
 
                 {/* All other trafic to error page */}
-                <Route path="*" element={<ErrorComponent/>} />
+                <Route path="*" element={<ErrorPage/>} />
             </Routes>
-            {/* 
-                TODO: <Footer/> 
-            */}
         </BrowserRouter>
-    </div>
+
+        <FooterComponent/> 
+    </Container>
   );
 }
 

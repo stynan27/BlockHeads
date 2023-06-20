@@ -2,9 +2,9 @@ import { Container, Row, Col } from 'react-bootstrap';
 
 import './style.css';
 
-export function ErrorComponent() {
+export function ErrorPage() {
     return (
-        <Container fluid className="ErrorComponent blockHeads-primary vh-100 d-flex align-items-center justify-content-center">
+        <Container fluid className="ErrorPage blockHeads-primary vh-100 d-flex align-items-center justify-content-center">
             <Row>
                 <Col>
                     <h1>We are working really hard!</h1>
@@ -18,4 +18,4 @@ export function ErrorComponent() {
     );
 }
 
-export default ErrorComponent;
+export default ErrorPage();
