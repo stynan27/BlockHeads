@@ -11,7 +11,7 @@ export function HeaderComponent() {
         >
             <Row>
                 <Col>
-                    <h1>TODO: Header goes here!</h1>
+                    <h1 className='lego-regular'>TODO: Header goes here!</h1>
                 </Col>          
             </Row>
 
