@@ -1,4 +1,4 @@
-import { Carousel } from 'react-bootstrap';
+import { Button, Carousel, Container, Row, Col } from 'react-bootstrap';
 
 import './style.css';
 
@@ -9,16 +9,30 @@ export function WelcomePage() {
     const imageList = welcomeImages.keys().map(welcomeImages);
 
     return (
-        <Carousel className="WelcomePage h-100">
+        <Carousel className="welcome-page h-100" interval={5000} controls={false}>
             {imageList.map((image, idx) => (
                 <Carousel.Item key={idx}>
-                    <Carousel.Caption>
-                        <h3>First slide label</h3>
-                        <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
+                    <Carousel.Caption className='welcome-caption lego-regular'>
+                        <Container>
+                            <Row>
+                                <Col></Col>
+                                <Col sm={6} className='caption-col'>
+                                    <h2>Welcome to BlockHeads!</h2>
+                                    <p>
+                                        BlockHeads was designed to be an all-in-one solution to Lego set managment. 
+                                        See how we can build your digital collection today!
+                                    </p>
+                                    <Button className='register-btn mb-2' size="md">
+                                        Start Building!
+                                    </Button>
+                                </Col>
+                                <Col></Col>
+                            </Row>
+                        </Container>
                     </Carousel.Caption>
                     <img
                         fluid
-                        className="LegoSetImage"
+                        className="lego-set-image"
                         src={image}
                         alt="Welcome page - Lego set images"
                     />

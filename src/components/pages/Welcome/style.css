@@ -1,9 +1,18 @@
-.WelcomePage {
+.welcome-page {
     text-align: center;
     background-color: #fff;
 }
 
-.LegoSetImage {
+.welcome-caption {
+    top: 2%;
+}
+
+.caption-col {
+    backdrop-filter: blur(2px);
+    -webkit-text-stroke: 0.05em #0377FF;
+}
+
+.lego-set-image {
     max-height: 100vh;
 }
   
