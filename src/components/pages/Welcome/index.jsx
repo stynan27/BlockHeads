@@ -1,28 +1,30 @@
-import { Container, Row, Col } from 'react-bootstrap';
+import { Carousel } from 'react-bootstrap';
 
 import './style.css';
 
 export function WelcomePage() {
-  return (
-    <Container fluid className="WelcomePage h-100">
-        <Row>
-            <Col>
-                {/*<img src={logo} className="App-logo" alt="logo" />*/}
-                <h1 className='lego-regular'>BlockHeads App - LEGO style</h1>
-                <p className='lego-regular'>
-                LEGO<span className='test-with-@'>@</span>.
-                </p>
-                <a
-                    className="App-link"
-                    href="https://reactjs.org"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                Learn React
-                </a>
-            </Col>
-        </Row>
-    </Container>
+    // Special NodeJS feature to import/get a list of images from specified relative directory
+    const welcomeImages = require.context('../../../assets/WelcomeImages', false);
+    // list conversion of imported images
+    const imageList = welcomeImages.keys().map(welcomeImages);
+
+    return (
+        <Carousel className="WelcomePage h-100">
+            {imageList.map((image, idx) => (
+                <Carousel.Item key={idx}>
+                    <Carousel.Caption>
+                        <h3>First slide label</h3>
+                        <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
+                    </Carousel.Caption>
+                    <img
+                        fluid
+                        className="LegoSetImage"
+                        src={image}
+                        alt="Welcome page - Lego set images"
+                    />
+                </Carousel.Item>
+            ))}
+        </Carousel>
   );
 }
 
