@@ -20,7 +20,7 @@ export function WelcomePage() {
                                     <h2>Welcome to BlockHeads!</h2>
                                     <p>
                                         BlockHeads was designed to be an all-in-one solution to Lego set managment. 
-                                        See how we can build your digital collection today!
+                                        See how we can build your digital collection today...
                                     </p>
                                     <Button className='register-btn mb-2' size="md">
                                         Start Building!
