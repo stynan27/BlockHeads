@@ -1,13 +1,15 @@
 import { Button, Carousel, Container, Row, Col } from 'react-bootstrap';
 
+import { AhsokaImg, ATATImg, ATTEImg, BabyYodaImg, CaptainRexImg, FalconImg, R2Img,
+     RazorcrestImg, RepublicGunshipImg, SSDImage } from '../../../assets/WelcomeImages';
+
 import './style.css';
 
 export function WelcomePage() {
-    // Special NodeJS feature to import/get a list of images from specified relative directory
-    const welcomeImages = require.context('../../../assets/WelcomeImages', false);
-    // list conversion of imported images
-    const imageList = welcomeImages.keys().map(welcomeImages);
 
+    // TODO: Will be more dynamic if we could fetch these from the backend instead...
+    const imageList=[ AhsokaImg, ATATImg, ATTEImg, BabyYodaImg, CaptainRexImg, 
+        FalconImg, R2Img, RazorcrestImg, RepublicGunshipImg, SSDImage ];
     return (
         <Carousel className="welcome-page h-100" interval={5000} controls={false} pause={false} fade={true}>
             {imageList.map((image, idx) => (
