@@ -11,7 +11,14 @@ export function WelcomePage() {
     const imageList=[ AhsokaImg, ATATImg, ATTEImg, BabyYodaImg, CaptainRexImg, 
         FalconImg, R2Img, RazorcrestImg, RepublicGunshipImg, SSDImage ];
     return (
-        <Carousel className="welcome-page h-100" interval={5000} controls={false} pause={false} fade={true}>
+        <Carousel 
+            data-testid="welcome-page"
+            className="welcome-page h-100" 
+            interval={5000} 
+            controls={false} 
+            pause={false} 
+            fade={true}
+        >
             {imageList.map((image, idx) => (
                 <Carousel.Item key={idx}>
                     <Carousel.Caption className='welcome-caption lego-regular'>
@@ -20,8 +27,8 @@ export function WelcomePage() {
                                 <Col></Col>
                                 <Col sm={6} className='caption-col'>
                                     <h2>Welcome to BlockHeads!</h2>
-                                    <p>
-                                        BlockHeads was designed to be an all-in-one solution to Lego set managment. 
+                                    <p data-testid={"welcome-description-" + idx}>
+                                        BlockHeads was designed to be an all-in-one solution to Lego set management. 
                                         See how we can build your digital collection today...
                                     </p>
                                     <Button className='register-btn mb-2' size="md">
@@ -33,7 +40,7 @@ export function WelcomePage() {
                         </Container>
                     </Carousel.Caption>
                     <img
-                        fluid
+                        fluid="true"
                         className="lego-set-image"
                         src={image}
                         alt="Welcome page - Lego set images"
