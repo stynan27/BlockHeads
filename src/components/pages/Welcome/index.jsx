@@ -9,7 +9,7 @@ export function WelcomePage() {
     const imageList = welcomeImages.keys().map(welcomeImages);
 
     return (
-        <Carousel className="welcome-page h-100" interval={5000} controls={false}>
+        <Carousel className="welcome-page h-100" interval={5000} controls={false} pause={false} fade={true}>
             {imageList.map((image, idx) => (
                 <Carousel.Item key={idx}>
                     <Carousel.Caption className='welcome-caption lego-regular'>
