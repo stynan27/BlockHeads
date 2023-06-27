@@ -1,0 +1,10 @@
+export const AhsokaImg = require('./ahsoka.png');
+export const ATATImg = require('./AT-AT.png');
+export const ATTEImg = require('./AT-TE.png');
+export const BabyYodaImg = require('./baby_yoda.png');
+export const CaptainRexImg = require('./captain_rex.png');
+export const FalconImg = require('./falcon.png');
+export const R2Img = require('./r2.png');
+export const RazorcrestImg = require('./razorcrest.png');
+export const RepublicGunshipImg = require('./republic_gunship.png');
+export const SSDImage = require('./SSD.png');

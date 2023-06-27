@@ -1,8 +1,14 @@
 import { render, screen } from '@testing-library/react';
 import App from '.';
 
-test('renders BlockHeads App text', () => {
-  render(<App />);
-  const linkElement = screen.getByText(/BlockHeads App/i);
-  expect(linkElement).toBeInTheDocument();
+test('renders BlockHeads Core App', () => {
+    // Arrange
+    const expectedTestId = 'core-app';
+
+    // Act
+    const { getByTestId } = render(<App />);
+    const CoreApp = getByTestId(expectedTestId);
+
+    // Assert
+    expect(CoreApp).toBeInTheDocument();
 });
