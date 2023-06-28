@@ -12,7 +12,10 @@ export function HeaderComponent() {
             style={{height: 70}}
         >
             <Row>
-                <Col className='headerLogoCol'>
+                <Col
+                    sm={3} 
+                    className='headerLogoCol'
+                >
                     <Button 
                         className='blockheadsImageButton px-0 py-0 border-0'
                     >
@@ -32,11 +35,13 @@ export function HeaderComponent() {
                         <Github size = {50}/>
                     </Button>
                 </Col>
-                <Col>
+                <Col sm={1} />
+                <Col sm={3} >
                     <Button className='lego-regular'>
                         Manage Sets
                     </Button>
                 </Col>
+                <Col sm={5} />
             </Row> 
         </Container>
     );
