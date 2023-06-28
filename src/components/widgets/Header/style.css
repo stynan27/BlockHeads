@@ -1,3 +1,8 @@
+.headerLogoCol {
+    /* relatively smallest pixel width before column squishes on itself */
+    min-width: 330px;
+}
+
 .blockheadsImageButton{
     background-color: transparent;
     opacity: 1;

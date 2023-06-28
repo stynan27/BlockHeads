@@ -2,7 +2,7 @@ import { Container, Row, Col, Button, Image} from 'react-bootstrap';
 import{Github} from 'react-bootstrap-icons';
 import headerLogo from '../../../assets/shadow.png';
 
-//import './style.css';
+import './style.css';
 
 export function HeaderComponent() {
     return (
@@ -12,7 +12,7 @@ export function HeaderComponent() {
             style={{height: 70}}
         >
             <Row>
-                <Col>
+                <Col className='headerLogoCol'>
                     <Button 
                         className='blockheadsImageButton px-0 py-0 border-0'
                     >
@@ -23,17 +23,21 @@ export function HeaderComponent() {
                             alt="BlockHeads Logo"
                         />  
                     </Button>
-                    <Button variant = "dark" className = 'blockheadsImageButton rounded-circle px-0 py-0' size = "sm" style = {{color: 'black'}}>
+                    <Button 
+                        variant="light"
+                        className='blockheadsImageButton rounded-circle px-0 py-0'
+                        size = "sm"
+                        style = {{color: 'black'}}
+                    >
                         <Github size = {50}/>
                     </Button>
-                </Col> 
+                </Col>
                 <Col>
-                    <Button>
-                        Test
+                    <Button className='lego-regular'>
+                        Manage Sets
                     </Button>
                 </Col>
             </Row> 
-
         </Container>
     );
 }
