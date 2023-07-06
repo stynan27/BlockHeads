@@ -9,3 +9,8 @@
     outline: none;
     border: none;
 }
+
+.headerRow{
+    display: flex-nowrap;
+    align-items: center;
+}

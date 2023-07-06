@@ -11,7 +11,9 @@ export function HeaderComponent() {
             className="HeaderComponent blockHeads-primary" 
             style={{height: 70}}
         >
-            <Row>
+            <Row
+                className = 'headerRow h-100 flex-nowrap'
+            >
                 <Col
                     sm={3} 
                     className='headerLogoCol'
@@ -29,19 +31,21 @@ export function HeaderComponent() {
                     <Button 
                         variant="light"
                         className='blockheadsImageButton rounded-circle px-0 py-0'
-                        size = "sm"
+                        size = "xs"
                         style = {{color: 'black'}}
                     >
                         <Github size = {50}/>
                     </Button>
                 </Col>
-                <Col sm={1} />
-                <Col sm={3} >
+                <Col sm={1}/>
+                <Col sm={3}>
+
                     <Button className='lego-regular'>
                         Manage Sets
                     </Button>
                 </Col>
-                <Col sm={5} />
+                <Col sm={10}/> 
+
             </Row> 
         </Container>
     );
