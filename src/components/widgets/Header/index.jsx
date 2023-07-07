@@ -14,7 +14,7 @@ export function HeaderComponent() {
                 className = 'headerRow h-100 py-2'
             >
                 <Col
-                    xs={3} 
+                    sm={3} 
                     className='headerLogoCol'
                 >
                     <Button 
@@ -36,7 +36,7 @@ export function HeaderComponent() {
                         <Github size = {30}/>
                     </Button>
                 </Col>
-                <Col xs={3} className='navButtonArrayCol'>
+                <Col sm={3} className='navButtonArrayCol'>
                     <Button className='lego-regular navButton'>
                         Manage Sets
                     </Button>
