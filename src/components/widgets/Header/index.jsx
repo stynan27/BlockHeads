@@ -9,10 +9,9 @@ export function HeaderComponent() {
         <Container
             fluid 
             className="HeaderComponent blockHeads-primary" 
-            style={{height: 70}}
         >
             <Row
-                className = 'headerRow h-100 flex-nowrap'
+                className = 'headerRow h-100 py-2'
             >
                 <Col
                     sm={3} 
@@ -24,7 +23,7 @@ export function HeaderComponent() {
                         <Image 
                             className='mx-0 my-0'
                             src={headerLogo}
-                            style={{width: 250, verticalAlign: "top", paddingTop: 0}}
+                            style={{width: 150, verticalAlign: "top", paddingTop: 0}}
                             alt="BlockHeads Logo"
                         />  
                     </Button>
@@ -34,18 +33,18 @@ export function HeaderComponent() {
                         size = "xs"
                         style = {{color: 'black'}}
                     >
-                        <Github size = {50}/>
+                        <Github size = {30}/>
                     </Button>
                 </Col>
-                <Col sm={1}/>
-                <Col sm={3}>
-
-                    <Button className='lego-regular'>
+                <Col sm={3} className='navButtonArrayCol'>
+                    <Button className='lego-regular navButton'>
                         Manage Sets
                     </Button>
+                    <Button className='lego-regular navButton'>
+                        About Us
+                    </Button>
                 </Col>
-                <Col sm={10}/> 
-
+                <Col /> 
             </Row> 
         </Container>
     );
