@@ -18,10 +18,14 @@ code {
     src: url(../public/LEGO.ttf);
 }
 .lego-regular {
-    font-family: lego;
-    color:white;
+    font-family: lego !important;
+    color:white !important;
     /* Outer black stroke example
     -webkit-text-stroke: 1px black; */
+}
+.lego-black {
+  font-family: lego !important;
+  color:black !important;
 }
 
 @font-face {
@@ -29,7 +33,7 @@ code {
     src: url(../public/LEGO_Outlined.ttf);
 }
 .lego-outlined {
-    font-family: lego-outlined;
+    font-family: lego-outlined !important;
 }
 
 .blockHeads-primary {
