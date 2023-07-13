@@ -26,7 +26,7 @@ export function FooterComponent() {
                     <p className='my-0'>Joseph Angelo</p>
                     <p className='my-0'>Software Engineer</p>
                     <p className='my-0'>(903)-283-1468</p>
-                    <p className='my-0'>jtangelo98@gmail.com</p>
+                    <p className='my-0'>jtangelo98<span className='emailSpan'>@</span>gmail.com</p>
                     
                     <Button 
                         className='linkedinButton rounded-0 py-0'
@@ -40,7 +40,7 @@ export function FooterComponent() {
                     <p className='my-0'> Seamus Tynan </p>
                     <p className='my-0'> Software Engineer </p>
                     <p className='my-0'> (716) - 870 - 9127 </p>
-                    <p className='my-0'> seamustynan@gmail.com </p>
+                    <p className='my-0'> seamustynan16<span className='emailSpan'>@</span>gmail.com </p>
                     
                     <Button 
                         className='linkedinButton rounded-0 py-0'
@@ -55,7 +55,7 @@ export function FooterComponent() {
             <hr className='horizontalRule'/>
 
             <Row className=''>
-                <p className='copyright'>Copyright 2023 BlockHeads USA Inc. All rights reserved.</p>
+                <p className='copyright'>Copyright &copy; 2023 BlockHeads USA Inc. All rights reserved.</p>
             </Row>
             
         </Container>
