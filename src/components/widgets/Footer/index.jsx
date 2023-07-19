@@ -38,7 +38,7 @@ export function FooterComponent() {
                 <Col className='lego-regular col-3 contactInfoCol'>
                     <p className='my-0'> Seamus Tynan </p>
                     <p className='my-0'> Software Engineer </p>
-                    <p className='my-0'> (716) - 870 - 9127 </p>
+                    <p className='my-0'> (716)-870-9127 </p>
                     <p className='my-0'> seamustynan16<span className='emailSpan'>@</span>gmail.com </p>
                     
                     <Button 
