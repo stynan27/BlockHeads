@@ -7,7 +7,6 @@ export function FooterComponent() {
         <Container
             fluid
             className="FooterComponent blockHeads-primary"
-            style={{height: 225}}
         >
             <Row
                 className='text-center'>
