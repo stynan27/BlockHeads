@@ -1,4 +1,4 @@
-package com.BlockHeads.controllers;
+package com.BlockHeads.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.BlockHeads.dto.LoginDto;
 import com.BlockHeads.dto.RegisterDto;
-import com.BlockHeads.models.User;
-import com.BlockHeads.repositories.UserRepository;
+import com.BlockHeads.model.User;
+import com.BlockHeads.repository.UserRepository;
 
 @RestController
 @RequestMapping("/api/user")

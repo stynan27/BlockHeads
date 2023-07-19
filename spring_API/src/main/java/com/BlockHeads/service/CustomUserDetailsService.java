@@ -1,4 +1,4 @@
-package com.BlockHeads.services;
+package com.BlockHeads.service;
 
 import java.util.Set;
 
@@ -7,8 +7,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import com.BlockHeads.models.User;
-import com.BlockHeads.repositories.UserRepository;
+import com.BlockHeads.model.User;
+import com.BlockHeads.repository.UserRepository;
 
 public class CustomUserDetailsService { //mplements UserDetailsService{
 	
