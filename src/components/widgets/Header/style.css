@@ -5,7 +5,7 @@
 
 .navButtonArrayCol {
     /* relatively smallest pixel width before column squishes on itself */
-    min-width: 208px;
+    min-width: 270px;
 }
 
 .blockheadsImageButton{
@@ -16,9 +16,8 @@
 }
 
 .navButton {
-    font-size: 18px;
-    padding: 3px 4px 3px 3px;
-    margin-right: 6px;
+    font-size: 20px;
+    margin-right: 12px;
 }
 
 .headerRow{
