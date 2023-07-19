@@ -1,11 +1,11 @@
 .headerLogoCol {
     /* relatively smallest pixel width before column squishes on itself */
-    min-width: 210px;
+    min-width: 375px;
 }
 
 .navButtonArrayCol {
     /* relatively smallest pixel width before column squishes on itself */
-    min-width: 150px;
+    min-width: 208px;
 }
 
 .blockheadsImageButton{
@@ -16,9 +16,9 @@
 }
 
 .navButton {
-    font-size: 10px;
+    font-size: 18px;
     padding: 3px 4px 3px 3px;
-    margin-right: 3px;
+    margin-right: 6px;
 }
 
 .headerRow{

@@ -23,17 +23,16 @@ export function HeaderComponent() {
                         <Image 
                             className='mx-0 my-0'
                             src={headerLogo}
-                            style={{width: 150, verticalAlign: "top", paddingTop: 0}}
+                            style={{width: 300, verticalAlign: "top", paddingTop: 0}}
                             alt="BlockHeads Logo"
                         />  
                     </Button>
                     <Button 
                         variant="light"
                         className='blockheadsImageButton rounded-circle px-0 py-0'
-                        size = "xs"
                         style = {{color: 'black'}}
                     >
-                        <Github size = {30}/>
+                        <Github size = {50}/>
                     </Button>
                 </Col>
                 <Col sm={3} className='navButtonArrayCol'>
