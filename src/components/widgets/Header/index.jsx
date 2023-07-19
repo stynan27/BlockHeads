@@ -31,6 +31,7 @@ export function HeaderComponent() {
                         variant="light"
                         className='blockheadsImageButton rounded-circle px-0 py-0'
                         style = {{color: 'black'}}
+                        onClick={() => { window.open('https://github.com/stynan27/BlockHeads' , '_blank');} }
                     >
                         <Github size = {50}/>
                     </Button>
