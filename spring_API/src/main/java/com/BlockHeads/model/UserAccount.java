@@ -1,24 +1,24 @@
-package com.BlockHeads.models;
+package com.BlockHeads.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 
 @Entity
-public class User {
+public class UserAccount {
 	
     @Id
     @GeneratedValue
-    private long id;
+    private Integer id;
     private String username;
     private String email;
     private String password;
     
-	public User() {
+	public UserAccount() {
 		super();
 	}
 	
-	public User(long id, String username, String email, String password) {
+	public UserAccount(Integer id, String username, String email, String password) {
 		super();
 		this.id = id;
 		this.username = username;
@@ -30,7 +30,7 @@ public class User {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 

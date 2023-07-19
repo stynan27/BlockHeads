@@ -7,14 +7,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import com.BlockHeads.model.User;
-import com.BlockHeads.repository.UserRepository;
+import com.BlockHeads.repository.UserAccountRepository;
 
 public class CustomUserDetailsService { //mplements UserDetailsService{
 	
-	private UserRepository userRepository;
+	private UserAccountRepository userRepository;
 	
-    public CustomUserDetailsService(UserRepository userRepository) {
+    public CustomUserDetailsService(UserAccountRepository userRepository) {
         this.userRepository = userRepository;
     }
     
