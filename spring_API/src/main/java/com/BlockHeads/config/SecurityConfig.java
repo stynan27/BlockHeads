@@ -15,12 +15,21 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfig {
-
+	
 	@Bean
 	public static PasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
+		// number of times to hash the password
+		// makes the algorithm slower, but more secure
+		int hashingRounds = 15;
+		
+        return new BCryptPasswordEncoder(hashingRounds);
     }
-
+	
+    @Bean
+    public CustomAuthenticationProvider authProvider() {
+        return new CustomAuthenticationProvider();
+    }
+	
     @Bean
     public AuthenticationManager authenticationManager(
                                  AuthenticationConfiguration configuration) throws Exception {

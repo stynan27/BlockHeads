@@ -11,11 +11,13 @@ import com.BlockHeads.repository.UserAccountRepository;
 
 public class CustomUserDetailsService { //mplements UserDetailsService{
 	
-	private UserAccountRepository userRepository;
+	private UserAccountRepository userAccountRepository;
 	
-    public CustomUserDetailsService(UserAccountRepository userRepository) {
-        this.userRepository = userRepository;
+    public CustomUserDetailsService(UserAccountRepository userAccountRepository) {
+        this.userAccountRepository = userAccountRepository;
     }
+    
+    
     
 //    @Override
 //    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

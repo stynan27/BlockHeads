@@ -1,7 +1,5 @@
 package com.BlockHeads.controller;
 
-import javax.naming.AuthenticationException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,8 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.DisabledException;
-import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -35,7 +31,7 @@ public class UserAccountController {
 	 
 	 
     @Autowired
-    private UserAccountRepository userRepository;
+    private UserAccountRepository userAccountRepository;
 
 
     @Autowired
@@ -50,15 +46,21 @@ public class UserAccountController {
     	Authentication authentication = new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword());
     	LOG.info("Authentication obj [{}]", authentication);
     	try {
-    		// TODO: Currently BROKEN!!!
-    		authenticationManager.authenticate(authentication);
+    		// Previously this line would break as the Auth requests
+    		// should be delegated to an AuthenticationProvider.
+    		// However, none were configured in the SecurityConfig.
+    		authentication = authenticationManager.authenticate(authentication);
     	} catch (BadCredentialsException bc) {
-    		LOG.info("authenticated exception 1", bc.getCause());
+    		String errorMessageString = "Bad Credentials Exception: " + bc.getMessage();
+    		LOG.info(errorMessageString);
+    		return new ResponseEntity<>(errorMessageString, HttpStatus.UNAUTHORIZED);
     	}
-    	//LOG.info("Authentication obj [{}]", authenticated);
+    	LOG.info("Authentication obj [{}]", authentication);
     	
+    	// Update record of who is currently authenticated by the application/API in the Singleton SecurityContextHolder
+    	SecurityContextHolder.getContext().setAuthentication(authentication);
     	
-//        SecurityContextHolder.getContext().setAuthentication(authentication);
+    	// TODO: Return UserAccount entity to client
         return new ResponseEntity<>("User signed-in successfully!.", HttpStatus.OK);
     }
     
@@ -67,29 +69,29 @@ public class UserAccountController {
     public ResponseEntity<?> registerUser(@RequestBody RegisterDto registerDto){
 
         // add check for username exists in a DB
-        if(userRepository.existsByUsername(registerDto.getUsername())){
+        if(userAccountRepository.existsByUsername(registerDto.getUsername())){
             return new ResponseEntity<>("Username is already taken!", HttpStatus.BAD_REQUEST);
         }
-        
 
-//        // add check for email exists in DB
-//        if(userRepository.existsByEmail(registerDto.getEmail())){
-//            return new ResponseEntity<>("Email is already taken!", HttpStatus.BAD_REQUEST);
-//        }
+		// // add check for email exists in DB
+		// if(userAccountRepository.existsByEmail(registerDto.getEmail())){
+		// 		return new ResponseEntity<>("Email is already taken!", HttpStatus.BAD_REQUEST);
+		//  }
 
         // create user object
         UserAccount userAccount = new UserAccount();
         //user.setName(registerDto.getName());
         userAccount.setUsername(registerDto.getUsername());
         //user.setEmail(registerDto.getEmail());
+        
+        // passwordEncoder.encode() uses BCrypt to hash + salt our passwords
+        // this makes stored passwords more difficult to crack
         userAccount.setPassword(passwordEncoder.encode(registerDto.getPassword()));
 
-//        Role roles = roleRepository.findByName("ROLE_ADMIN").get();
-//        user.setRoles(Collections.singleton(roles));
+        userAccountRepository.save(userAccount);
 
-        //userRepository.save(user);
-        userRepository.save(userAccount);
-
+        // TODO: Return UserAccount entity to client
+        // ... Reminder the hashing process will be SLOW!!! -> account for this in the client interactions
         return new ResponseEntity<>("User registered successfully", HttpStatus.OK);
 
     }
