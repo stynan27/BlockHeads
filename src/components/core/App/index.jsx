@@ -10,7 +10,7 @@ import './style.css';
 
 export function AppComponent() {
   return (
-    <Container fluid className="AppComponent vh-100 px-0">
+    <Container fluid className="AppComponent vh-100 px-0" data-testid="core-app">
         <HeaderComponent/> 
 
         <BrowserRouter>

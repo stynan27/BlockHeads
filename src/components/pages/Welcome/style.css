@@ -1,40 +1,18 @@
-.WelcomePage {
+.welcome-page {
     text-align: center;
-    background-color: #282c34;
+    background-color: #fff;
 }
-  
-.Welcome-logo {
-    height: 40vmin;
-    pointer-events: none;
+
+.welcome-caption {
+    top: 2%;
 }
-  
-@media (prefers-reduced-motion: no-preference) {
-    .Welcome-logo {
-      animation: App-logo-spin infinite 20s linear;
-    }
+
+.caption-col {
+    backdrop-filter: blur(2px);
+    -webkit-text-stroke: 0.05em #0377FF;
 }
-  
-.Welcome-header {
-    background-color: #282c34;
-    /* min-height: 100vh;
-    display: flex; 
-    flex-direction: column; */
-    align-items: center;
-    justify-content: center;
-    font-size: calc(10px + 2vmin);
-    /* color: white; */
-}
-  
-.Welcome-link {
-    color: #61dafb;
-}
-  
-@keyframes Welcome-logo-spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
+
+.lego-set-image {
+    max-height: 100vh;
 }
   
