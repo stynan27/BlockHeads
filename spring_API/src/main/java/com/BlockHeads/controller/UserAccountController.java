@@ -34,6 +34,8 @@ public class UserAccountController {
     		return new ResponseEntity<UserDto>(userDto, HttpStatus.UNAUTHORIZED);
     	}
     	
+    	// TODO: Get User and fill UserDto
+    	
         return new ResponseEntity<UserDto>(userDto, HttpStatus.OK);
     }
     
@@ -56,6 +58,8 @@ public class UserAccountController {
 		//  }
     	
     	UserAccount newUserAccount = userAccountService.createAccount(user);
+    	
+    	// TODO: Use newUSerAccount to populate UserDto here...
     	
         // ... Reminder the hashing process will be SLOW!!! -> account for this in the client interactions
         return new ResponseEntity<UserDto>(userDto, HttpStatus.CREATED);
