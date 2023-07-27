@@ -42,10 +42,10 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         	if (passwordEncoder.matches(password, userAccount.getPassword())) {
                 return new UsernamePasswordAuthenticationToken(username, password, grantedAuthorities);
         	} else {
-        		throw new BadCredentialsException("Invalid password");
+        		throw new BadCredentialsException("Invalid password.");
         	}
         } catch(NoSuchElementException e) {
-        	throw new BadCredentialsException("Invalid username");
+        	throw new BadCredentialsException("Invalid username.");
         }
         
 

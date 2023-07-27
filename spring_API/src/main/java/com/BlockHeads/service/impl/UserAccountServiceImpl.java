@@ -63,7 +63,7 @@ public class UserAccountServiceImpl implements UserAccountService {
 	}
 
 	@Override
-	public Boolean authenticateAccount(UserAccount user) {
+	public String authenticateAccount(UserAccount user) {
     	Authentication authentication = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
     	LOG.info("Authentication obj [{}]", authentication);
     	try {
@@ -74,14 +74,14 @@ public class UserAccountServiceImpl implements UserAccountService {
     	} catch (BadCredentialsException bc) {
     		String errorMessageString = "Bad Credentials Exception: " + bc.getMessage();
     		LOG.info(errorMessageString);
-    		return false;
+    		return errorMessageString;
     	}
     	LOG.info("Authentication obj [{}]", authentication);
     	
     	// Update record of who is currently authenticated by the application/API in the Singleton SecurityContextHolder
     	SecurityContextHolder.getContext().setAuthentication(authentication);
     	
-    	return true;
+    	return "";
 	}
 	
     

@@ -23,25 +23,31 @@ public class UserAccountController {
     private UserAccountService userAccountService;
 
     @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser(@RequestBody UserAccount user) {
+    public ResponseEntity<UserDto> authenticateUser(@RequestBody UserAccount user) {
     	LOG.info("Received /signin request for [{}]", user.getUsername());
 
-    	Boolean isAuthenticated = userAccountService.authenticateAccount(user);
-    	if (!isAuthenticated) {		
-    		return new ResponseEntity<String>("Username/password combination is invalid.", HttpStatus.UNAUTHORIZED);
+    	UserDto userDto = new UserDto(user.getUsername());
+    	
+    	String authErrorMsg = userAccountService.authenticateAccount(user);   	
+    	if (authErrorMsg.length() > 0) {
+    		userDto.setErrorMessage(authErrorMsg);
+    		return new ResponseEntity<UserDto>(userDto, HttpStatus.UNAUTHORIZED);
     	}
     	
-        return new ResponseEntity<UserDto>(new UserDto(user.getUsername()), HttpStatus.OK);
+        return new ResponseEntity<UserDto>(userDto, HttpStatus.OK);
     }
     
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody UserAccount user){
+    public ResponseEntity<UserDto> registerUser(@RequestBody UserAccount user){
     	LOG.info("Received /register request for [{}]", user.getUsername());
+    	
+    	UserDto userDto = new UserDto(user.getUsername());
 
     	// Username already taken
     	if (userAccountService.accountExists(user.getUsername())) {
-            return new ResponseEntity<String>("Username already taken.", HttpStatus.CONFLICT);
+    		userDto.setErrorMessage("Username already taken.");
+            return new ResponseEntity<UserDto>(userDto, HttpStatus.CONFLICT);
     	}
     	
 		// TODO: add check for email exists in DB
@@ -52,7 +58,7 @@ public class UserAccountController {
     	UserAccount newUserAccount = userAccountService.createAccount(user);
     	
         // ... Reminder the hashing process will be SLOW!!! -> account for this in the client interactions
-        return new ResponseEntity<UserDto>(new UserDto(newUserAccount.getUsername()), HttpStatus.CREATED);
+        return new ResponseEntity<UserDto>(userDto, HttpStatus.CREATED);
 
     }
 }
