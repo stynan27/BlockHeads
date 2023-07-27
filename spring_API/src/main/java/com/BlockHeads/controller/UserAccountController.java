@@ -22,7 +22,7 @@ public class UserAccountController {
     @Autowired
     private UserAccountService userAccountService;
 
-    @PostMapping("/signin")
+    @PostMapping("/login")
     public ResponseEntity<UserDto> authenticateUser(@RequestBody UserAccount user) {
     	LOG.info("Received /signin request for [{}]", user.getUsername());
 
