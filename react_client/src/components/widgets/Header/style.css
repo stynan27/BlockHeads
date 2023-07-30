@@ -1,0 +1,25 @@
+.headerLogoCol {
+    /* relatively smallest pixel width before column squishes on itself */
+    min-width: 375px;
+}
+
+.navButtonArrayCol {
+    /* relatively smallest pixel width before column squishes on itself */
+    min-width: 270px;
+}
+
+.blockheadsImageButton{
+    background-color: transparent;
+    opacity: 1;
+    outline: none;
+    border: none;
+}
+
+.navButton {
+    font-size: 20px;
+    margin-right: 12px;
+}
+
+.headerRow{
+    align-items: center;
+}
