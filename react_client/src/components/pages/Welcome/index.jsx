@@ -26,12 +26,12 @@ export function WelcomePage() {
                             <Row>
                                 <Col></Col>
                                 <Col sm={6} className='caption-col'>
-                                    <h2>Welcome to BlockHeads!</h2>
-                                    <p data-testid={"welcome-description-" + id}>
+                                    <h1>Welcome to BlockHeads!</h1>
+                                    <p className="caption-text" data-testid={"welcome-description-" + id}>
                                         BlockHeads was designed to be an all-in-one solution to Lego set management. 
                                         See how we can build your digital collection today...
                                     </p>
-                                    <Button className='register-btn mb-2' size="md">
+                                    <Button className='mb-2' size="md">
                                         Start Building!
                                     </Button>
                                 </Col>
