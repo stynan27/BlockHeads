@@ -1,0 +1,22 @@
+.welcome-page {
+    text-align: center;
+    background-color: #fff;
+}
+
+.welcome-caption {
+    top: 2%;
+}
+
+.caption-col {
+    backdrop-filter: blur(2px);
+    -webkit-text-stroke: 0.05em #0377FF;
+}
+
+.caption-text {
+    font-size: 18px;
+}
+
+.lego-set-image {
+    max-height: 100vh;
+}
+  
