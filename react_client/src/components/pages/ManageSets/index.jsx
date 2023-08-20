@@ -23,7 +23,7 @@ export function ManageSetsPage() {
             </Row>
             <Row>
                 <Col>  
-                    <Button className='mb-2' size="md">
+                    <Button className='mt-2' size="md">
                         Add set
                     </Button>
                 </Col>
