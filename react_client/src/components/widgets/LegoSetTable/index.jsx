@@ -1,8 +1,9 @@
+import { useState, useEffect } from 'react';
 import { Table } from 'react-bootstrap';
 
 import './style.css';
 
-const MAX_ROWS = 12;
+const MAX_ROWS = 14;
 const HEADERS = [
     "",
     "Id",
@@ -30,50 +31,40 @@ const mockData = [
 
 export function LegoSetTable() {
 
+    const [rowsJSX, setRowsJsx] = useState();
+
+    //console.log(rowsJSX);
+
+    // only on component load... (since empty dependency list)
+    // useEffect(() => {
+    //     // TODO: Populate Table
+    //     // Make rJSX a state variable! (used below as well)
+    //     // setRowJSX(mockData.map(() => {
+
+    //     // }));
+    // }, [rowsJSX]);
+
     // TODO: Place this in a utility file?
     // Also, there has to be a better way to populate...
     const thJSX = HEADERS.map((header, colId) => 
-        <th key={'th_' + colId} className='set-table'>{header}</th>
+        <th key={'th_' + colId} className='table-data'>{header}</th>
     );
 
-    let rowsJSX = Array.apply(null, Array(MAX_ROWS)).map(( _ , rowId) => {
+    function getJsx() {
 
-        const tdJSX = HEADERS.map(( _ , colId) => <td key={'td_row' + rowId + '_col' + colId} className='set-table'></td>);
+    }
 
-        console.log(tdJSX)
-        let rowJSX = <tr key={'row'+rowId}>{tdJSX}</tr>
-        if (mockData[rowId] !== undefined) {
-            // TODO: Modify td's by key... HOw Do Tht??@!!?!?
-            //console.log(rowJSX);
-            return (<tr key={'row'+rowId}>
-                <td key={'td_row' + rowId + '_col' + 0} className='set-table'/>
-                <td key={'td_row' + rowId + '_col' + 1} className='set-table'>{rowId}</td>
-                <td key={'td_row' + rowId + '_col' + 2} className='set-table'>{mockData[rowId].name}</td>
-                <td key={'td_row' + rowId + '_col' + 3} className='set-table'>{mockData[rowId].number}</td>
-                <td key={'td_row' + rowId + '_col' + 4} className='set-table'>{mockData[rowId].description}</td>
-                <td key={'td_row' + rowId + '_col' + 5} className='set-table'>{mockData[rowId].minifigures}</td>
-                <td key={'td_row' + rowId + '_col' + 6} className='set-table'>{mockData[rowId].numPieces}</td>
-                <td key={'td_row' + rowId + '_col' + 7} className='set-table'>{mockData[rowId].price}</td>
-                <td key={'td_row' + rowId + '_col' + 8} className='set-table' />
-            </tr>)
-            
-        }
 
-        return (rowJSX);
-    });
-      
     return (
         <Table striped bordered hover>
             <thead>
-                <tr >
+                <tr className='table-row'>
                     { thJSX }
                 </tr>
             </thead>
             <tbody>
-                { rowsJSX }                                                                                                                                                                                       
+                { rowsJSX }                                                                                                                                                                            
             </tbody>
         </Table>
     );
 }
-
-export default LegoSetTable();

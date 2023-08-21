@@ -12,8 +12,6 @@ import './style.css';
 export function AppComponent() {
   return (
     <Container fluid className="AppComponent vh-100 px-0" data-testid="core-app">
-
-
         <BrowserRouter>
             <HeaderComponent/> 
             <Routes>
@@ -24,7 +22,6 @@ export function AppComponent() {
             </Routes>
             <FooterComponent/> 
         </BrowserRouter>
-
     </Container>
   );
 }

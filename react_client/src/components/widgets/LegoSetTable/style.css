@@ -1,7 +1,7 @@
-.set-table {
+.table-data {
     background-color: orange !important;
 }
 
-.table {
-    background-color: orange !important;
+.table-row {
+    height: 42px;
 }

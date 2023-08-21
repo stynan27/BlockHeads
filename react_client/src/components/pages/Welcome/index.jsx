@@ -10,6 +10,7 @@ export function WelcomePage() {
     // TODO: Will be more dynamic if we could fetch these from the backend instead...
     const imageList=[ AhsokaImg, ATATImg, ATTEImg, BabyYodaImg, CaptainRexImg, 
         FalconImg, R2Img, RazorcrestImg, RepublicGunshipImg, SSDImage ];
+    
     return (
         <Carousel 
             data-testid="welcome-page"
@@ -50,5 +51,3 @@ export function WelcomePage() {
         </Carousel>
   );
 }
-
-export default WelcomePage();
