@@ -30,10 +30,10 @@ export function LegoSetTable() {
     }, []);
 
     return (
-        <Table striped bordered hover>
+        <Table striped bordered hover className='lego-regular'>
             <thead>
                 <tr className='table-row'>
-                    { initTableHeaders(HEADERS, 'table-data') }
+                    { initTableHeaders(HEADERS, 'table-headers') }
                 </tr>
             </thead>
             <tbody>
