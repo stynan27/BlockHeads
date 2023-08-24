@@ -4,12 +4,10 @@ import { showAuthModal } from "../../../store/login";
 import { useSelector, useDispatch } from "react-redux"
 export function UserAuth(props){
 
-    console.log(props);
     const visible = useSelector((state) => state.authModalVisible.value);
     const title = useSelector((state) => state.authModalVisible.title)
 
     useEffect(() => {}, [props.title]);
-    console.log(props.title);
 
     const dispatch = useDispatch();
 

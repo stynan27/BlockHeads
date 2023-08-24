@@ -12,6 +12,10 @@
     -webkit-text-stroke: 0.05em #0377FF;
 }
 
+.caption-text {
+    font-size: 20px;
+}
+
 .lego-set-image {
     max-height: 100vh;
 }

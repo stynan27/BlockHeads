@@ -1,16 +1,14 @@
-import { Container, Row, Col, Button, Image} from 'react-bootstrap';
-import{Github} from 'react-bootstrap-icons';
+import { Container, Row, Col, Button, Image } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
+import{ Github } from 'react-bootstrap-icons';
 import headerLogo from '../../../assets/shadow.png';
-import {useState} from 'react';
-import {UserAuth} from '../Login';
 import { showAuthModal } from '../../../store/login';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import './style.css';
 
 export function HeaderComponent() {
 
-    const authModalVisible = useSelector((state) => state.authModalVisible.value);
     const dispatch = useDispatch();
 
     const handleLoginOpen = () => {
@@ -30,16 +28,18 @@ export function HeaderComponent() {
                     sm={3} 
                     className='headerLogoCol'
                 >
-                    <Button 
-                        className='blockheadsImageButton px-0 py-0 border-0'
-                    >
-                        <Image 
-                            className='mx-0 my-0'
-                            src={headerLogo}
-                            style={{width: 300, verticalAlign: "top", paddingTop: 0}}
-                            alt="BlockHeads Logo"
-                        />  
-                    </Button>
+                    <Link to="/">
+                        <Button 
+                            className='blockheadsImageButton px-0 py-0 border-0'
+                        >
+                            <Image 
+                                className='mx-0 my-0'
+                                src={headerLogo}
+                                style={{width: 300, verticalAlign: "top", paddingTop: 0}}
+                                alt="BlockHeads Logo"
+                            />  
+                        </Button>
+                    </Link>
                     <Button 
                         variant="light"
                         className='blockheadsImageButton rounded-circle px-0 py-0'
@@ -50,9 +50,11 @@ export function HeaderComponent() {
                     </Button>
                 </Col>
                 <Col sm={3} className='navButtonArrayCol'>
-                    <Button className='lego-regular navButton'>
-                        Manage Sets
-                    </Button>
+                    <Link to="/manage-sets">
+                        <Button className='lego-regular navButton'>
+                            Manage Sets
+                        </Button>
+                    </Link>
                     <Button className='lego-regular navButton'>
                         About Us
                     </Button>

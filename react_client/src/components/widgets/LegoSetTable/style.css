@@ -1,0 +1,13 @@
+.table-headers {
+    background-color: orange !important;
+    font-weight: normal !important;
+    font-size: 20px;
+}
+
+.table-row {
+    height: 42px;
+}
+
+.table-data {
+    background-color: orange !important;
+}
