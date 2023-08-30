@@ -1,11 +1,11 @@
-import { Button, Row, Col } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 import{ EyeFill, PencilFill, TrashFill } from 'react-bootstrap-icons';
 
 const TABLE_ICON_PX_SIZE = 18;
 
 export function initTableHeaders(headers, className_th) {
     return headers.map((header, colId) => 
-        <th key={'th_' + colId} className={className_th}>{header}</th>
+        <th key={'th_' + colId} className={`${className_th} th_${colId}`}>{header}</th>
     );
 }
 
@@ -31,37 +31,29 @@ export function populateRowsFromMock(rowsJSX, mockData) {
             <td key={'td_row' + rowId + '_col' + 5} className='table-data'>{mockData[rowId].numPieces}</td>
             <td key={'td_row' + rowId + '_col' + 6} className='table-data'>{mockData[rowId].price}</td>
             <td key={'td_row' + rowId + '_col' + 7} className='table-data'>
-                <Row>
-                    <Col>
-                        <Button 
-                            variant="light"
-                            className='blockheadsImageButton rounded-circle'
-                            style = {{color: 'black'}}
-                        >
-                            <EyeFill size = {TABLE_ICON_PX_SIZE}/>
-                        </Button>
-                    </Col>
+                <Button 
+                    variant="light"
+                    className='blockheadsImageButton rounded-circle'
+                    style = {{color: 'black'}}
+                >
+                    <EyeFill size = {TABLE_ICON_PX_SIZE}/>
+                </Button>
 
-                    <Col>
-                        <Button 
-                            variant="light"
-                            className='blockheadsImageButton rounded-circle'
-                            style = {{color: 'black'}}
-                        >
-                            <PencilFill size = {TABLE_ICON_PX_SIZE}/>
-                        </Button>
-                    </Col>
+                <Button 
+                    variant="light"
+                    className='blockheadsImageButton rounded-circle'
+                    style = {{color: 'black'}}
+                >
+                    <PencilFill size = {TABLE_ICON_PX_SIZE}/>
+                </Button>
 
-                    <Col>
-                        <Button 
-                            variant="light"
-                            className='blockheadsImageButton rounded-circle'
-                            style = {{color: 'black'}}
-                        >
-                            <TrashFill size = {TABLE_ICON_PX_SIZE}/>
-                        </Button>
-                    </Col>
-                </Row>
+                <Button 
+                    variant="light"
+                    className='blockheadsImageButton rounded-circle'
+                    style = {{color: 'black'}}
+                >
+                    <TrashFill size = {TABLE_ICON_PX_SIZE}/>
+                </Button>
             </td>
         </tr>)
     })

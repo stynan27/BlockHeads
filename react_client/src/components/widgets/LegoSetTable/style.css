@@ -3,6 +3,24 @@
     font-weight: normal !important;
     font-size: 22px;
 }
+.th_0 {
+    width: 3%;
+}
+.th_1 {
+    width: 15%;
+}
+.th_2 {
+    width: 5%;
+}
+.th_5 {
+    width: 6%;
+}
+.th_6 {
+    width: 6%;
+}
+.th_7 {
+    width: 8%;
+}
 
 .table-row {
     height: 42px;
@@ -14,8 +32,7 @@
     background-color: orange !important;
 }
 
-.test {
-    display: flex;
-    align-items: center !important;
-    justify-content: center !important;
+.blockheadsImageButton {
+    background-color: blue;
+    opacity: 1 !important;
 }
