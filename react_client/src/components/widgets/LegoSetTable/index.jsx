@@ -7,13 +7,12 @@ import './style.css';
 
 const MAX_ROWS = 14;
 const HEADERS = [
-    "",
     "Id",
     "Set Name",
     "Set Number",
     "Description",
     "Minifigure List",
-    "# of Peices",
+    "# of Pieces",
     "Price $",
     "Actions"
 ]
@@ -44,7 +43,7 @@ export function LegoSetTable() {
     }, []);
 
     return (
-        <Table striped bordered hover className='lego-regular'>
+        <Table striped bordered hover className='lego-regular' size='sm' responsive='sm'>
             <thead>
                 <tr className='table-row'>
                     { initTableHeaders(HEADERS, 'table-headers') }

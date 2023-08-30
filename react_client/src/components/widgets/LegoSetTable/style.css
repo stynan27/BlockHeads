@@ -1,7 +1,7 @@
 .table-headers {
     background-color: orange !important;
     font-weight: normal !important;
-    font-size: 20px;
+    font-size: 22px;
 }
 
 .table-row {
@@ -9,5 +9,13 @@
 }
 
 .table-data {
+    vertical-align: middle !important;
+    font-size: 18px;
     background-color: orange !important;
+}
+
+.test {
+    display: flex;
+    align-items: center !important;
+    justify-content: center !important;
 }
