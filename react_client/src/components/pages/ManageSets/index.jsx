@@ -9,7 +9,7 @@ export function ManageSetsPage() {
         <Container
             fluid 
             data-testid="manage-sets-page"
-            className="manage-sets-page vh-100 justify-content-center" 
+            className="manage-sets-page justify-content-center" 
         >
             <Row>
                 <Col>
@@ -23,7 +23,7 @@ export function ManageSetsPage() {
             </Row>
             <Row>
                 <Col>  
-                    <Button className='lego-regular mt-2' size="md">
+                    <Button className='lego-regular mt-2 mb-4' size="md">
                         Add set
                     </Button>
                 </Col>
