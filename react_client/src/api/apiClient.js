@@ -6,6 +6,6 @@ const host = 'localhost';
 // Create an axios configuration which has our baseURL
 export const apiClient = axios.create(
     {
-        baseURL: "http://" + host + ":9000"
+        baseURL: "http://" + host + ":8080"
     }
 )

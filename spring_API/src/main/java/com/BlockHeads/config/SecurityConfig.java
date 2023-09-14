@@ -43,15 +43,20 @@ public class SecurityConfig {
                 .authorizeHttpRequests((authorize) ->
                         //authorize.anyRequest().authenticated()
                 		authorize
+//                			.requestMatchers("http://localhost:3000/api/**").permitAll()
+//                				.requestMatchers("http://localhost:3000/api/user/**").permitAll()
+//                				.anyRequest().authenticated()
                 			// Allow H2 Console
 	                		.requestMatchers(PathRequest.toH2Console()).permitAll()
 	                		// Allow all /api/ routes
-	                        .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
-	                        		.requestMatchers("/api/user/**").permitAll()
+//	                        .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
+                			.requestMatchers(HttpMethod.GET, "http://localhost:3000/api/**").permitAll()
+            				.requestMatchers("http://localhost:3000/api/user/**").permitAll()
+//	                        		.requestMatchers("/api/user/**").permitAll()
 	                                .anyRequest().authenticated()
-
                 );
 
+        http.cors().disable();
         return http.build();
     }
 
