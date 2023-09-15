@@ -35,8 +35,8 @@ export function UserAuth(props){
             })
             .catch(function (error) {
                 // handle error (show error banner)
-                console.log('ERROR!!!');
-                console.log(error);
+                console.log("Error code: " + error["response"]["status"]);
+                console.log(error["response"]);
             })
     }
 

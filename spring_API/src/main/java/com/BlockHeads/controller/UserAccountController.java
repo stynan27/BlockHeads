@@ -16,6 +16,7 @@ import com.BlockHeads.model.UserAccount;
 import com.BlockHeads.service.UserAccountService;
 
 @RestController
+@CrossOrigin("http://localhost:3000") // TODO: Development fix for CORS errors -> Remove in production!!!
 @RequestMapping("/api/user")
 public class UserAccountController {
 	private static final Logger LOG = LoggerFactory.getLogger(UserAccountController.class);
@@ -42,14 +43,21 @@ public class UserAccountController {
     
 
     @PostMapping("/register")
-    @CrossOrigin(origins = "http://localhost:3000")
     public ResponseEntity<UserDto> registerUser(@RequestBody UserAccount user){
     	LOG.info("Received /register request for [{}]", user.getUsername());
     	
     	UserDto userDto = new UserDto(user.getUsername());
+    	
+    	if (user.getUsername() == null) { 
+    		userDto.setErrorMessage("Username cannot be null.");
+    		return new ResponseEntity<UserDto>(userDto, HttpStatus.BAD_REQUEST);
+    	} else if (user.getPassword() == null) {
+    		userDto.setErrorMessage("Password cannot be null.");
+    		return new ResponseEntity<UserDto>(userDto, HttpStatus.BAD_REQUEST);
+    	}
 
     	// Username already taken
-    	if (userAccountService.accountExists(user.getUsername())) {
+    	if (userAccountService.accountExists(user.getUsername().toLowerCase())) {
     		userDto.setErrorMessage("Username already taken.");
             return new ResponseEntity<UserDto>(userDto, HttpStatus.CONFLICT);
     	}
