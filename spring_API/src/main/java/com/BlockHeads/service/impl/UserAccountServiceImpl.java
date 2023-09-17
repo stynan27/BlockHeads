@@ -1,5 +1,7 @@
 package com.BlockHeads.service.impl;
 
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +57,16 @@ public class UserAccountServiceImpl implements UserAccountService {
 	@Override
 	public UserAccount readAccountByUsername(String username) {
 		return userAccountRepository.findByUsername(username).get();
+	}
+	
+	@Override
+	public UserAccount readAccountById(Integer id) {
+		LOG.info("readAccountById(Integer id) [{}]", id.longValue());
+		Optional<UserAccount> userOptional = userAccountRepository.findById(id.longValue());
+		if (!userOptional.isPresent()) {
+			return null;
+		}
+		return userOptional.get();
 	}
 	
 	@Override
