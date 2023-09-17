@@ -1,8 +1,11 @@
 package com.BlockHeads.model;
 
+import java.util.Set;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class UserAccount {
@@ -10,9 +13,12 @@ public class UserAccount {
     @Id
     @GeneratedValue
     private Integer id;
+    @OneToMany(mappedBy = "userAccount")
+    private Set<LegoSet> LegoSets;
     private String username;
     private String email;
     private String password;
+    
     
 	public UserAccount() {
 		super();
