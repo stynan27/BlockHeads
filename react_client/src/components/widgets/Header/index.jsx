@@ -2,15 +2,25 @@ import { Container, Row, Col, Button, Image } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import{ Github } from 'react-bootstrap-icons';
 import headerLogo from '../../../assets/shadow.png';
+import { showAuthModal } from '../../../store/login';
+import { useDispatch } from 'react-redux';
 
 import './style.css';
 
 export function HeaderComponent() {
+
+    const dispatch = useDispatch();
+
+    const handleLoginOpen = () => {
+        dispatch(showAuthModal('Login'));
+    }
+
     return (
         <Container
             fluid 
             className="HeaderComponent blockHeads-primary" 
         >
+
             <Row
                 className = 'headerRow h-100 py-2'
             >
@@ -49,10 +59,18 @@ export function HeaderComponent() {
                         About Us
                     </Button>
                 </Col>
-                <Col /> 
+                <Col>
+                    <Button 
+                        variant = 'dark'
+                        className ='lego-regular loginButton'
+                        onClick={handleLoginOpen}
+                        > 
+                        Login
+                    </Button>
+                </Col>
             </Row> 
         </Container>
     );
 }
 
-export default HeaderComponent();
+export default HeaderComponent;

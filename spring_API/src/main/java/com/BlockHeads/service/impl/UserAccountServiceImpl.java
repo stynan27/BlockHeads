@@ -40,7 +40,7 @@ public class UserAccountServiceImpl implements UserAccountService {
         // create user object
         UserAccount userAccount = new UserAccount();
         //user.setName(registerDto.getName());
-        userAccount.setUsername(user.getUsername());
+        userAccount.setUsername(user.getUsername().toLowerCase());
         //user.setEmail(registerDto.getEmail());
         
         // passwordEncoder.encode() uses BCrypt to hash + salt our passwords
