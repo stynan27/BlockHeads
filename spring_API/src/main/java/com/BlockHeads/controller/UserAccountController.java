@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.BlockHeads.dto.LegoSetDto;
 import com.BlockHeads.dto.UserDto;
+
 import com.BlockHeads.model.UserAccount;
 import com.BlockHeads.service.UserAccountService;
 
@@ -38,7 +39,9 @@ public class UserAccountController {
     		return new ResponseEntity<UserDto>(userDto, HttpStatus.UNAUTHORIZED);
     	}
     	
-    	// TODO: Get User and fill UserDto
+    	UserAccount userAccount = userAccountService.readAccountByUsername(user.getUsername());
+    	Integer newUserId = (int) userAccount.getId();
+    	userDto.setId(newUserId);
     	
         return new ResponseEntity<UserDto>(userDto, HttpStatus.OK);
     }
@@ -64,16 +67,11 @@ public class UserAccountController {
             return new ResponseEntity<UserDto>(userDto, HttpStatus.CONFLICT);
     	}
     	
-		// TODO: add check for email exists in DB
-		// if(userAccountRepository.existsByEmail(user.getEmail())){
-		// 		return new ResponseEntity<>("Email is already taken!", HttpStatus.CONFLICT);
-		//  }
-    	
-    	UserAccount newUserAccount = userAccountService.createAccount(user);
-    	
-    	// TODO: Use newUSerAccount to populate UserDto here...
-    	
         // ... Reminder the hashing process will be SLOW!!! -> account for this in the client interactions
+    	UserAccount newUserAccount = userAccountService.createAccount(user);
+    	Integer newUserId = (int) newUserAccount.getId();
+    	userDto.setId(newUserId);
+    	
         return new ResponseEntity<UserDto>(userDto, HttpStatus.CREATED);
 
     }
