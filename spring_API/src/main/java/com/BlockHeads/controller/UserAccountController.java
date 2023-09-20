@@ -1,22 +1,34 @@
 package com.BlockHeads.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.BlockHeads.dto.LegoSetDto;
 import com.BlockHeads.dto.UserDto;
 
 import com.BlockHeads.model.UserAccount;
+import com.BlockHeads.model.LegoSet;
+import com.BlockHeads.service.LegoSetService;
 import com.BlockHeads.service.UserAccountService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @CrossOrigin("http://localhost:3000") // TODO: Development fix for CORS errors -> Remove in production!!!
@@ -26,6 +38,9 @@ public class UserAccountController {
 	
     @Autowired
     private UserAccountService userAccountService;
+    
+    @Autowired
+    private LegoSetService legoSetService;
 
     @PostMapping("/login")
     public ResponseEntity<UserDto> authenticateUser(@RequestBody UserAccount user) {
@@ -77,31 +92,63 @@ public class UserAccountController {
     }
     
     @PostMapping("/{userId}/lego-set")
-    public ResponseEntity<LegoSetDto> createLegoSet(@PathVariable Integer userId, @RequestBody LegoSetDto legoSet) { 
-    	
-    	LOG.info("Received /lego-set POST request request for userId [{}], with Lego Set [{}]", 
+    public ResponseEntity<LegoSetDto> createLegoSet(@PathVariable Integer userId, @Valid @RequestBody LegoSet legoSet) { 
+
+    	LOG.info("Received /lego-set POST request for userId [{}], with Lego Set [{}]", 
     			userId.toString(), legoSet.toString()
     	);
     	
-    	LegoSetDto legoSetDto = new LegoSetDto(legoSet, null);
+    	LegoSetDto legoSetDto = new LegoSetDto(legoSet, null); 
+    	
     	UserAccount userAccount = userAccountService.readAccountById(userId);
     	if (userAccount == null) {
     		legoSetDto.setErrorMessage("No user account found for id " + userId.toString() + ".");
     		return new ResponseEntity<LegoSetDto>(legoSetDto, HttpStatus.NOT_FOUND);
     	}
-    	legoSet.setUserAccount(userAccount);
+    	// TODO: workaround to prevent returning hashed password
+    	// Entity decorator for this?!?
+    	userAccount.setPassword(null);
+    	legoSetDto.setUserAccount(userAccount);
     	
-    	// TODO: service to create new legoSet
+    	LegoSet createdLegoSet = legoSetService.createLegoSet(legoSet);
+    	legoSetDto.setId(createdLegoSet.getId());
     	
     	return new ResponseEntity<LegoSetDto>(legoSetDto, HttpStatus.CREATED);
     }
     
     
     // TODO: Get ALL Lego sets by user id
+    @GetMapping("/{userId}/lego-sets")
+    public ResponseEntity<LegoSetDto> getAllLegoSets(@PathVariable Integer userId) { 
+    	
+    	LOG.info("Received /lego-sets GET request for userId [{}]", 
+    			userId.toString()
+    	);
+    	
+    	LegoSetDto legoSetDto = new LegoSetDto(null, null); 
+    	
+    	return new ResponseEntity<LegoSetDto>(legoSetDto, HttpStatus.OK);
+    }
+    
     
     // TODO: Get a Lego set by user id and set id
     
     // TODO: Update a lego set by user id
     
     // TODO: Delete a lego set by user Id
+    
+    // Handle Data Validation Errors
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, String> handleValidationExceptions(
+    		  MethodArgumentNotValidException ex) {
+    		    Map<String, String> errors = new HashMap<>();
+    		    ex.getBindingResult().getAllErrors().forEach((error) -> {
+    		        String fieldName = ((FieldError) error).getField();
+    		        String errorMessage = error.getDefaultMessage();
+    		        errors.put(fieldName, errorMessage);
+    		    });
+    		    return errors;
+    		}
+    
 }

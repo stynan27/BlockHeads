@@ -8,6 +8,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 
 @Entity
 public class LegoSet {
@@ -20,10 +23,15 @@ public class LegoSet {
     @JoinColumn(name = "user_id")
     private UserAccount userAccount;
     
+    @NotBlank(message = "Name must not be blank")
     private String name;
+    
     private Integer identifyingNumber;
     private String description;
     private Integer numberOfPieces;
+    
+    @NotNull
+    @PositiveOrZero
     private Float price;
     
     @Lob
