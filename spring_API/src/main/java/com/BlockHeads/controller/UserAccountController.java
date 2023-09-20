@@ -1,7 +1,9 @@
 package com.BlockHeads.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -105,10 +107,13 @@ public class UserAccountController {
     		legoSetDto.setErrorMessage("No user account found for id " + userId.toString() + ".");
     		return new ResponseEntity<LegoSetDto>(legoSetDto, HttpStatus.NOT_FOUND);
     	}
-    	// TODO: workaround to prevent returning hashed password
-    	// Entity decorator for this?!?
-    	userAccount.setPassword(null);
-    	legoSetDto.setUserAccount(userAccount);
+    	
+    	LOG.info("Retrieved UserAccount with Id [{}]", 
+    			userAccount.getId()
+    	);
+    	
+    	// TODO: PROBLEM! Direct reference corrupts stored PW with obfuscated PW
+    	legoSet.setUserAccount(userAccount);
     	
     	LegoSet createdLegoSet = legoSetService.createLegoSet(legoSet);
     	legoSetDto.setId(createdLegoSet.getId());
@@ -119,15 +124,44 @@ public class UserAccountController {
     
     // TODO: Get ALL Lego sets by user id
     @GetMapping("/{userId}/lego-sets")
-    public ResponseEntity<LegoSetDto> getAllLegoSets(@PathVariable Integer userId) { 
+    public ResponseEntity<List<LegoSetDto>> getAllLegoSets(@PathVariable Integer userId) { 
     	
     	LOG.info("Received /lego-sets GET request for userId [{}]", 
     			userId.toString()
     	);
     	
-    	LegoSetDto legoSetDto = new LegoSetDto(null, null); 
+		ArrayList<LegoSetDto> legoSetDtoList = new ArrayList<LegoSetDto>();
     	
-    	return new ResponseEntity<LegoSetDto>(legoSetDto, HttpStatus.OK);
+    	UserAccount userAccount = userAccountService.readAccountById(userId);
+    	if (userAccount == null) {
+    		String errorMessage = "No user account found for id " + userId.toString() + ".";
+    		// TODO: Return empty Dto here -> Only field is errorMessage
+    		// May need to remove LegoSet extension in DTO type
+    		legoSetDtoList.add(new LegoSetDto(errorMessage));
+    		return new ResponseEntity<List<LegoSetDto>>(legoSetDtoList, HttpStatus.NOT_FOUND);
+    	}
+	
+    	
+    	LOG.info("UserAccount [{}] found", 
+    			userAccount.toString()
+    	);
+    	
+    	ArrayList<LegoSet> userAccountLegoSets = new ArrayList<>(userAccount.getLegoSets());
+    	//(ArrayList<LegoSet>) userAccount.getLegoSets();
+    	if (userAccountLegoSets == null || userAccountLegoSets.isEmpty()) {
+    		return new ResponseEntity<List<LegoSetDto>>(legoSetDtoList, HttpStatus.OK);
+    	}
+    	
+    	LOG.info("Populating ArrayList<LegoSetsDto> from userAccountLegoSets");
+    	for (LegoSet legoSet : userAccountLegoSets) {
+    		// TODO: prevent displaying password to client
+    		legoSet.getUserAccount().setPassword(null);
+    		// TODO: prevent circular references error
+    		legoSet.getUserAccount().setLegoSets(null);
+    		legoSetDtoList.add(new LegoSetDto(legoSet, null));
+    	}
+    	
+    	return new ResponseEntity<List<LegoSetDto>>(legoSetDtoList, HttpStatus.OK);
     }
     
     

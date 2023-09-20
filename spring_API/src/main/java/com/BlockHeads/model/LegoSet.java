@@ -2,6 +2,8 @@ package com.BlockHeads.model;
 
 import java.sql.Blob;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -19,10 +21,6 @@ public class LegoSet {
 	@GeneratedValue
 	private Integer id;
 	
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private UserAccount userAccount;
-    
     @NotBlank(message = "Name must not be blank")
     private String name;
     
@@ -36,6 +34,10 @@ public class LegoSet {
     
     @Lob
     private Blob instructions;
+    
+    @ManyToOne
+    @JoinColumn(name = "user_account_id", nullable=false)
+    private UserAccount userAccount;
 
 	public LegoSet() {
 		super();

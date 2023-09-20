@@ -12,10 +12,18 @@ public class LegoSetDto extends LegoSet {
 	}
 
 
+	public LegoSetDto(String errorMessage) {
+		super();
+		this.errorMessage = errorMessage;
+	}
+	
 	public LegoSetDto(LegoSet legoSet, String errorMessage) {
+
 		super(legoSet.getId(), legoSet.getUserAccount(), legoSet.getName(), 
 				legoSet.getIdentifyingNumber(), legoSet.getDescription(), 
 				legoSet.getNumberOfPieces(), legoSet.getPrice(), legoSet.getInstructions());
+		
+		
 		this.errorMessage = errorMessage;
 	}
 

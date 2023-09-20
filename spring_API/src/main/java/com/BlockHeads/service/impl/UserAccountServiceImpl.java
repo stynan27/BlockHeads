@@ -54,6 +54,7 @@ public class UserAccountServiceImpl implements UserAccountService {
 		return userAccount;
 	}
 
+	// TODO: Function returns null? -> Requires testing.
 	@Override
 	public UserAccount readAccountByUsername(String username) {
 		return userAccountRepository.findByUsername(username).get();

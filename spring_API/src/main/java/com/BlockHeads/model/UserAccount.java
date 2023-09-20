@@ -1,6 +1,6 @@
 package com.BlockHeads.model;
 
-import java.util.Set;
+import java.util.List;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -13,11 +13,13 @@ public class UserAccount {
     @Id
     @GeneratedValue
     private Integer id;
-    @OneToMany(mappedBy = "userAccount")
-    private Set<LegoSet> LegoSets;
+    
     private String username;
     private String email;
     private String password;
+    
+    @OneToMany(mappedBy = "userAccount")
+    private List<LegoSet> LegoSets;
     
     
 	public UserAccount() {
@@ -62,6 +64,13 @@ public class UserAccount {
 
 	public void setPassword(String password) {
 		this.password = password;
-	}    
-    
+	}
+
+	public List<LegoSet> getLegoSets() {
+		return LegoSets;
+	}
+
+	public void setLegoSets(List<LegoSet> legoSets) {
+		LegoSets = legoSets;
+	}
 }
