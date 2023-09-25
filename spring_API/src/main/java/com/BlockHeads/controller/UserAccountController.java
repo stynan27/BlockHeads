@@ -14,10 +14,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -165,7 +167,7 @@ public class UserAccountController {
     public ResponseEntity<LegoSetDto> getLegoSet(@PathVariable Integer userId,
     		@PathVariable Integer legoSetId) { 
     	
-    	LOG.info("Received /lego-sets GET request for userId [{}] and legoSetId [{}]", 
+    	LOG.info("Received /lego-set GET request for userId [{}] and legoSetId [{}]", 
     			userId.toString(),
     			legoSetId.toString()
     	);
@@ -201,9 +203,80 @@ public class UserAccountController {
     	return new ResponseEntity<LegoSetDto>(legoSetDto, HttpStatus.OK);
     }
     
-    // TODO: Update a lego set by user id
+    @PutMapping("/{userId}/lego-set/{legoSetId}")
+    public ResponseEntity<LegoSetDto> updateLegoSet(@PathVariable Integer userId,
+    		@PathVariable Integer legoSetId, @Valid @RequestBody LegoSet updatedLegoSet) { 	
+    	
+    	LOG.info("Received /lego-set PUT request for userId [{}] and legoSetId [{}]" +
+    			" with updatedLegoSet [{}]", 
+    			userId.toString(),
+    			legoSetId.toString(),
+    			updatedLegoSet.toString()
+    	);
+    	// Force consistency between entity to update and LegoSet Id provided
+    	updatedLegoSet.setId(legoSetId);
+    	
+		LegoSetDto legoSetDto = new LegoSetDto();
+    	
+    	UserAccount userAccount = userAccountService.readAccountById(userId);
+    	if (userAccount == null) {
+    		String errorMessage = "No user account found for userId " + userId.toString() + ".";
+    		// For now we just explain if erorMessage field is present,
+    		// ignore LegoSet content
+    		legoSetDto.setErrorMessage(errorMessage);
+    		return new ResponseEntity<LegoSetDto>(legoSetDto, HttpStatus.NOT_FOUND);
+    	}
+		
+    	LOG.info("UserAccount [{}] found", 
+    			userAccount.toString()
+    	);
+    	
+    	LOG.info("Getting list of users LegoSets for modification...");
+    	ArrayList<LegoSet> userAccountLegoSets = new ArrayList<>(userAccount.getLegoSets());
+    	if (userAccountLegoSets == null || userAccountLegoSets.isEmpty()) {
+    		String errorMessage = "No LegoSets found.";
+    		legoSetDto.setErrorMessage(errorMessage);
+    		return new ResponseEntity<LegoSetDto>(legoSetDto, HttpStatus.NOT_FOUND);
+    	}
+
+    	LOG.info("Updating UserAccount [{}] for new LegoSets list with updatedLegoSet [{}]",
+    			userAccount.toString(),
+    			updatedLegoSet.toString()
+    	); 
+    	UserAccount updatedUserAccount = userAccountService.updateAccountLegoSet(userAccount, legoSetId, updatedLegoSet);
+   
+    	LegoSet updatedSet = updatedUserAccount.getLegoSets()
+    			.stream()
+    			.filter(foundLegoSet -> foundLegoSet.getId() == legoSetId)
+    			.collect(Collectors.toList())
+    			.get(0);
+    	LOG.info("Returning updated LegoSet [{}]",
+    			updatedSet
+    	);
+    	legoSetDto = legoSetService.createCleanLegoSetDto(updatedSet);
+    	
+    	return new ResponseEntity<LegoSetDto>(legoSetDto, HttpStatus.OK);
+    }
     
-    // TODO: Delete a lego set by user Id
+    @DeleteMapping("/{userId}/lego-set/{legoSetId}")
+    public ResponseEntity<Boolean> deleteLegoSet(@PathVariable Integer userId,
+    		@PathVariable Integer legoSetId) { 
+    	
+    	LOG.info("Received /lego-set DELETE request for userId [{}] and legoSetId [{}]", 
+    			userId.toString(),
+    			legoSetId.toString()
+    	);
+    	
+		// Don't bother checking for existing userAccount here, 
+		// we want to make sure set gets deleted either way!!
+		
+		Boolean wasLegoSetDeleted = legoSetService.deleteLegoSet(legoSetId.longValue());
+		if (!wasLegoSetDeleted) {
+			return new ResponseEntity<Boolean>(false, HttpStatus.NOT_FOUND);
+		}
+    	
+    	return new ResponseEntity<Boolean>(true, HttpStatus.OK);
+    }
     
     // Handle Data Validation Errors
     @ExceptionHandler(MethodArgumentNotValidException.class)

@@ -1,5 +1,7 @@
 package com.BlockHeads.service.impl;
 
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.BlockHeads.controller.UserAccountController;
 import com.BlockHeads.dto.LegoSetDto;
 import com.BlockHeads.model.LegoSet;
+import com.BlockHeads.model.UserAccount;
 import com.BlockHeads.repository.LegoSetRepository;
 import com.BlockHeads.service.LegoSetService;
 
@@ -27,9 +30,9 @@ public class LegoSetServiceImpl implements LegoSetService {
 	public LegoSet createLegoSet(LegoSet legoSet) {
 		LOG.info("LegoSetService createLegoSet() for legoSet: [{}])", legoSet.toString());
 		
-        legoSetRepository.save(legoSet);
+        LegoSet createdLegoSet = legoSetRepository.save(legoSet);
 		
-		return legoSet;
+		return createdLegoSet;
 	}
 	
 	@Override
@@ -43,5 +46,20 @@ public class LegoSetServiceImpl implements LegoSetService {
     	
     	return new LegoSetDto(legoSet, null);
 		
+	}
+	
+	@Override
+	public Boolean deleteLegoSet(Long legoSetId) {
+		LOG.info("LegoSetService deleteLegoSet() for legoSetId: [{}])", legoSetId.toString());
+
+		// Check to see if LegoSet exists
+		Optional<LegoSet> legoSetOptional = legoSetRepository.findById(legoSetId);
+		if (!legoSetOptional.isPresent()) {
+			return false;
+		}
+			
+        legoSetRepository.deleteById(legoSetId);
+		
+		return true;
 	}
 }

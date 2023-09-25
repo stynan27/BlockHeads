@@ -5,6 +5,7 @@ import java.sql.Blob;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -35,7 +36,8 @@ public class LegoSet {
     @Lob
     private Blob instructions;
     
-    @ManyToOne
+    // I blieve this might also fix circular imports
+    @ManyToOne(fetch = FetchType.LAZY) 
     @JoinColumn(name = "user_account_id", nullable=false)
     private UserAccount userAccount;
 
