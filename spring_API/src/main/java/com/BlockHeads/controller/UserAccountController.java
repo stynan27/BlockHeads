@@ -3,6 +3,7 @@ package com.BlockHeads.controller;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -104,7 +105,7 @@ public class UserAccountController {
     	
     	UserAccount userAccount = userAccountService.readAccountById(userId);
     	if (userAccount == null) {
-    		legoSetDto.setErrorMessage("No user account found for id " + userId.toString() + ".");
+    		legoSetDto.setErrorMessage("No user account found for userId " + userId.toString() + ".");
     		return new ResponseEntity<LegoSetDto>(legoSetDto, HttpStatus.NOT_FOUND);
     	}
     	
@@ -112,7 +113,6 @@ public class UserAccountController {
     			userAccount.getId()
     	);
     	
-    	// TODO: PROBLEM! Direct reference corrupts stored PW with obfuscated PW
     	legoSet.setUserAccount(userAccount);
     	
     	LegoSet createdLegoSet = legoSetService.createLegoSet(legoSet);
@@ -122,7 +122,6 @@ public class UserAccountController {
     }
     
     
-    // TODO: Get ALL Lego sets by user id
     @GetMapping("/{userId}/lego-sets")
     public ResponseEntity<List<LegoSetDto>> getAllLegoSets(@PathVariable Integer userId) { 
     	
@@ -134,9 +133,9 @@ public class UserAccountController {
     	
     	UserAccount userAccount = userAccountService.readAccountById(userId);
     	if (userAccount == null) {
-    		String errorMessage = "No user account found for id " + userId.toString() + ".";
-    		// TODO: Return empty Dto here -> Only field is errorMessage
-    		// May need to remove LegoSet extension in DTO type
+    		String errorMessage = "No user account found for userId " + userId.toString() + ".";
+    		// For now we just explain if erorMessage field is present,
+    		// ignore LegoSet content
     		legoSetDtoList.add(new LegoSetDto(errorMessage));
     		return new ResponseEntity<List<LegoSetDto>>(legoSetDtoList, HttpStatus.NOT_FOUND);
     	}
@@ -147,25 +146,60 @@ public class UserAccountController {
     	);
     	
     	ArrayList<LegoSet> userAccountLegoSets = new ArrayList<>(userAccount.getLegoSets());
-    	//(ArrayList<LegoSet>) userAccount.getLegoSets();
     	if (userAccountLegoSets == null || userAccountLegoSets.isEmpty()) {
-    		return new ResponseEntity<List<LegoSetDto>>(legoSetDtoList, HttpStatus.OK);
+    		String errorMessage = "No LegoSets found.";
+    		legoSetDtoList.add(new LegoSetDto(errorMessage));
+    		return new ResponseEntity<List<LegoSetDto>>(legoSetDtoList, HttpStatus.NOT_FOUND);
     	}
     	
     	LOG.info("Populating ArrayList<LegoSetsDto> from userAccountLegoSets");
-    	for (LegoSet legoSet : userAccountLegoSets) {
-    		// TODO: prevent displaying password to client
-    		legoSet.getUserAccount().setPassword(null);
-    		// TODO: prevent circular references error
-    		legoSet.getUserAccount().setLegoSets(null);
-    		legoSetDtoList.add(new LegoSetDto(legoSet, null));
+    	for (LegoSet legoSet : userAccountLegoSets) { 		
+    		legoSetDtoList.add(legoSetService.createCleanLegoSetDto(legoSet));
     	}
     	
     	return new ResponseEntity<List<LegoSetDto>>(legoSetDtoList, HttpStatus.OK);
     }
     
     
-    // TODO: Get a Lego set by user id and set id
+    @GetMapping("/{userId}/lego-set/{legoSetId}")
+    public ResponseEntity<LegoSetDto> getLegoSet(@PathVariable Integer userId,
+    		@PathVariable Integer legoSetId) { 
+    	
+    	LOG.info("Received /lego-sets GET request for userId [{}] and legoSetId [{}]", 
+    			userId.toString(),
+    			legoSetId.toString()
+    	);
+    	
+		LegoSetDto legoSetDto = new LegoSetDto();
+    	
+    	UserAccount userAccount = userAccountService.readAccountById(userId);
+    	if (userAccount == null) {
+    		String errorMessage = "No user account found for userId " + userId.toString() + ".";
+    		// For now we just explain if erorMessage field is present,
+    		// ignore LegoSet content
+    		legoSetDto.setErrorMessage(errorMessage);
+    		return new ResponseEntity<LegoSetDto>(legoSetDto, HttpStatus.NOT_FOUND);
+    	}
+	
+    	
+    	LOG.info("UserAccount [{}] found", 
+    			userAccount.toString()
+    	);
+    	
+    	ArrayList<LegoSet> userAccountLegoSets = (ArrayList<LegoSet>) new ArrayList<>(userAccount.getLegoSets())
+    			.stream()
+    			.filter(legoSet -> legoSet.getId() == legoSetId)
+    			.collect(Collectors.toList());
+    	if (userAccountLegoSets == null || userAccountLegoSets.isEmpty()) {
+    		String errorMessage = "No LegoSet found for legoSetId " + legoSetId.toString() + ".";
+    		legoSetDto.setErrorMessage(errorMessage);
+    		return new ResponseEntity<LegoSetDto>(legoSetDto, HttpStatus.NOT_FOUND);
+    	}
+    	// get first LegoSet that matches passed Id for this user
+    	legoSetDto = legoSetService.createCleanLegoSetDto(userAccountLegoSets.get(0));
+    	
+    	return new ResponseEntity<LegoSetDto>(legoSetDto, HttpStatus.OK);
+    }
     
     // TODO: Update a lego set by user id
     

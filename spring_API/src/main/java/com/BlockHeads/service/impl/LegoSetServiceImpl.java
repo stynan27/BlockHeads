@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.BlockHeads.controller.UserAccountController;
+import com.BlockHeads.dto.LegoSetDto;
 import com.BlockHeads.model.LegoSet;
 import com.BlockHeads.repository.LegoSetRepository;
 import com.BlockHeads.service.LegoSetService;
@@ -29,5 +30,18 @@ public class LegoSetServiceImpl implements LegoSetService {
         legoSetRepository.save(legoSet);
 		
 		return legoSet;
+	}
+	
+	@Override
+	public LegoSetDto createCleanLegoSetDto(LegoSet legoSet) { 
+		LOG.info("LegoSetService createLegoSetDto() for legoSet: [{}])", legoSet.toString());
+		
+		// prevent displaying password to client
+		legoSet.getUserAccount().setPassword(null);
+		// prevent circular references error
+		legoSet.getUserAccount().setLegoSets(null);
+    	
+    	return new LegoSetDto(legoSet, null);
+		
 	}
 }
