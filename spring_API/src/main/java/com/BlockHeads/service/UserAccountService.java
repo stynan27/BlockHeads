@@ -8,6 +8,7 @@ public interface UserAccountService {
 	UserAccount createAccount(UserAccount user);
 	UserAccount readAccountByUsername(String username);
 	UserAccount readAccountById(Integer id);
+	LegoSet readUserLegoSetById(UserAccount userAccount, Integer legoSetId);
 	UserAccount updateAccountLegoSet(UserAccount user, Integer legoSetId, LegoSet updatedLegoSet);
 	Boolean accountExists(String username);
 	String authenticateAccount(UserAccount user);

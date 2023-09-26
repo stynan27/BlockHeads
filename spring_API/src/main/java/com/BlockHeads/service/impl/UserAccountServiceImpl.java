@@ -76,6 +76,21 @@ public class UserAccountServiceImpl implements UserAccountService {
 	}
 	
 	@Override
+	public LegoSet readUserLegoSetById(UserAccount userAccount, Integer legoSetId) {
+		LOG.info("readUserLegoSetById(Integer legoSetId) [{}]", legoSetId.toString());
+		
+    	ArrayList<LegoSet> userAccountLegoSets = (ArrayList<LegoSet>) new ArrayList<LegoSet>(userAccount.getLegoSets())
+    			.stream()
+    			.filter(legoSet -> legoSet.getId() == legoSetId)
+    			.collect(Collectors.toList());
+
+    	if (userAccountLegoSets == null || userAccountLegoSets.isEmpty()) {
+    		return null;
+    	}
+    	return userAccountLegoSets.get(0);
+	}
+	
+	@Override
 	public UserAccount updateAccountLegoSet(UserAccount user, Integer legoSetId, LegoSet updatedLegoSet) {
 		LOG.info("updateAccountById(Integer id) [{}]", user.getId());
 		

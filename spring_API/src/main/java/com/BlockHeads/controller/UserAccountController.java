@@ -188,17 +188,13 @@ public class UserAccountController {
     			userAccount.toString()
     	);
     	
-    	ArrayList<LegoSet> userAccountLegoSets = (ArrayList<LegoSet>) new ArrayList<>(userAccount.getLegoSets())
-    			.stream()
-    			.filter(legoSet -> legoSet.getId() == legoSetId)
-    			.collect(Collectors.toList());
-    	if (userAccountLegoSets == null || userAccountLegoSets.isEmpty()) {
+    	LegoSet retrievedLegoSet =  userAccountService.readUserLegoSetById(userAccount, legoSetId); 
+    	if (retrievedLegoSet == null) {
     		String errorMessage = "No LegoSet found for legoSetId " + legoSetId.toString() + ".";
     		legoSetDto.setErrorMessage(errorMessage);
     		return new ResponseEntity<LegoSetDto>(legoSetDto, HttpStatus.NOT_FOUND);
     	}
-    	// get first LegoSet that matches passed Id for this user
-    	legoSetDto = legoSetService.createCleanLegoSetDto(userAccountLegoSets.get(0));
+    	legoSetDto = legoSetService.createCleanLegoSetDto(retrievedLegoSet);
     	
     	return new ResponseEntity<LegoSetDto>(legoSetDto, HttpStatus.OK);
     }
@@ -227,14 +223,13 @@ public class UserAccountController {
     		return new ResponseEntity<LegoSetDto>(legoSetDto, HttpStatus.NOT_FOUND);
     	}
 		
-    	LOG.info("UserAccount [{}] found", 
-    			userAccount.toString()
-    	);
+    	LOG.info("UserAccount [{}] found", userAccount.toString());
     	
-    	LOG.info("Getting list of users LegoSets for modification...");
-    	ArrayList<LegoSet> userAccountLegoSets = new ArrayList<>(userAccount.getLegoSets());
-    	if (userAccountLegoSets == null || userAccountLegoSets.isEmpty()) {
-    		String errorMessage = "No LegoSets found.";
+    	LOG.info("Verifying user has LegoSets and legoSetId [{}] exists for update...", legoSetId.toString());
+    	
+    	LegoSet validLegoSet = userAccountService.readUserLegoSetById(userAccount, legoSetId);
+    	if (validLegoSet == null) {
+    		String errorMessage = "No LegoSets found for legoSetId " + legoSetId + ".";
     		legoSetDto.setErrorMessage(errorMessage);
     		return new ResponseEntity<LegoSetDto>(legoSetDto, HttpStatus.NOT_FOUND);
     	}
@@ -243,17 +238,14 @@ public class UserAccountController {
     			userAccount.toString(),
     			updatedLegoSet.toString()
     	); 
-    	UserAccount updatedUserAccount = userAccountService.updateAccountLegoSet(userAccount, legoSetId, updatedLegoSet);
+    	UserAccount updatedUserAccount = userAccountService.
+    			updateAccountLegoSet(userAccount, legoSetId, updatedLegoSet);
    
-    	LegoSet updatedSet = updatedUserAccount.getLegoSets()
-    			.stream()
-    			.filter(foundLegoSet -> foundLegoSet.getId() == legoSetId)
-    			.collect(Collectors.toList())
-    			.get(0);
+    	LegoSet retrievedLegoSet = userAccountService.readUserLegoSetById(updatedUserAccount, legoSetId);
     	LOG.info("Returning updated LegoSet [{}]",
-    			updatedSet
+    			retrievedLegoSet
     	);
-    	legoSetDto = legoSetService.createCleanLegoSetDto(updatedSet);
+    	legoSetDto = legoSetService.createCleanLegoSetDto(retrievedLegoSet);
     	
     	return new ResponseEntity<LegoSetDto>(legoSetDto, HttpStatus.OK);
     }
