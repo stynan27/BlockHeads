@@ -11,3 +11,9 @@ export const registerUser
 = (username, password) => apiClient.post(`/api/user/register`, 
     { username, password } // pass user & pass directly in request body
 );
+
+// TODO: /login
+export const loginUser
+= (username, password) => apiClient.post(`/api/user/login`, 
+    { username, password } // pass user & pass directly in request body
+);
