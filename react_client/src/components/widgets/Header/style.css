@@ -20,6 +20,12 @@
     margin-right: 12px;
 }
 
+.loginButton {
+    font-size: 20px;
+    margin-right: 30px;
+    float: right;
+}
+
 .headerRow{
     align-items: center;
 }
