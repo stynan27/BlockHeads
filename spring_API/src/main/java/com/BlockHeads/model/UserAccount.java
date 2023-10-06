@@ -1,8 +1,13 @@
 package com.BlockHeads.model;
 
+import java.util.List;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class UserAccount {
@@ -10,9 +15,18 @@ public class UserAccount {
     @Id
     @GeneratedValue
     private Integer id;
+    
     private String username;
     private String email;
     private String password;
+    
+    @OneToMany(
+    		mappedBy = "userAccount",
+            cascade = CascadeType.ALL, // Necess. for updating this list on user updates?
+            orphanRemoval = true
+    )
+    private List<LegoSet> LegoSets;
+    
     
 	public UserAccount() {
 		super();
@@ -56,6 +70,13 @@ public class UserAccount {
 
 	public void setPassword(String password) {
 		this.password = password;
-	}    
-    
+	}
+
+	public List<LegoSet> getLegoSets() {
+		return LegoSets;
+	}
+
+	public void setLegoSets(List<LegoSet> legoSets) {
+		LegoSets = legoSets;
+	}
 }

@@ -1,6 +1,8 @@
 package com.BlockHeads.dto;
 
 public class UserDto {
+	
+	private Integer id;
 
 	private String username;
 	
@@ -11,6 +13,15 @@ public class UserDto {
 		this.username = username;
 	}
     
+	public Integer getId() {
+		return id;
+	}
+
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
 	public String getUsername() {
 		return username;
 	}
