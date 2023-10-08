@@ -1,6 +1,6 @@
 package com.BlockHeads.config;
 
-import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
+//import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -43,8 +43,6 @@ public class SecurityConfig {
 	        .authorizeHttpRequests((authorize) ->
 	                //authorize.anyRequest().authenticated()
 	        		authorize
-	        			// Allow H2 Console
-	            		.requestMatchers(PathRequest.toH2Console()).permitAll()
 	        			.requestMatchers(HttpMethod.GET, "/api/**").permitAll()
 	    					.requestMatchers("/api/user/**").permitAll()
 	                            .anyRequest().authenticated()
