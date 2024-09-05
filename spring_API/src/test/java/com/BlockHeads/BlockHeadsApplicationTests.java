@@ -64,7 +64,7 @@ class BlockHeadsApplicationTests {
 		// will need to perform cleanup steps to ensure the test user/sets are removed!!!
         UserAccount testUserAccount = new UserAccount();
         testUserAccount.setId(1);
-        testUserAccount.setUsername("stynan");
+        testUserAccount.setUsername("fake_user");
         testUserAccount.setPassword("password123");
         
         // Execute
