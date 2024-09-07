@@ -2,6 +2,7 @@ from pathlib import Path
 import subprocess
 
 ### GLOBAL SCOPED VARS
+SECONDS_BETWEEN_COMMANDS = 10
 GLIBC_PRIVATE_ERROR = 'error: /snap/core20/current/lib/x86_64-linux-gnu/libpthread.so.0: \
     undefined symbol: __libc_pthread_init, version GLIBC_PRIVATE'
 
@@ -17,11 +18,21 @@ COMMANDS: dict = {
         'bash', 
         '-c'
     ],
-    "NPM_RUN_INSTALL": [ 
-        'npm install; exec bash' # use "; exec bash" to keep terminal open after install
+    "AND_IF": [
+        '&&'
+    ],
+    "SLEEP": [
+        'sleep',
+        str(SECONDS_BETWEEN_COMMANDS)
+    ],
+    "NPM_INSTALL": [ 
+        'npm',
+        'install' 
     ],
     "NPM_RUN_START": [ 
-        'npm run start'
+        'npm',
+        'run',
+        'start'
     ]
 }
 
@@ -59,12 +70,31 @@ def run_command(cmd, cwd):
 # install react client packages
 def run_npm_install():
     print('Running npm install')
-    cmd = COMMANDS['NEW_TERMINAL'] + COMMANDS['NPM_RUN_INSTALL']
+    
+    # use "; exec bash" to keep terminal open after install
+    sub_cmd = " ".join(COMMANDS['NPM_INSTALL'] + ['; bash'] 
+    cmd = COMMANDS['NEW_TERMINAL'] + [sub_cmd]
+    
     return run_command(cmd, REACT_CLIENT_PATH)
 
 def run_react_client():
     print('Launching Blockheads React client')
-    cmd = COMMANDS['NEW_TERMINAL'] + COMMANDS['NPM_RUN_START']
+    
+    sub_cmd = " ".join(COMMANDS['NPM_RUN_START']
+    cmd = COMMANDS['NEW_TERMINAL'] + [sub_cmd]
+    
+    return run_command(cmd, REACT_CLIENT_PATH)
+
+def run_react_client_with_install():
+    print('Launching Blockheads React client')
+
+    sub_cmd = " ".join(COMMANDS['NPM_INSTALL'] + \
+        COMMANDS['AND_IF'] + \
+            COMMANDS['SLEEP'] + \
+                COMMANDS['AND_IF'] + \
+                    COMMANDS['NPM_RUN_START'])
+    cmd = COMMANDS['NEW_TERMINAL'] + [sub_cmd]
+    
     return run_command(cmd, REACT_CLIENT_PATH)
 
 
@@ -77,10 +107,9 @@ def run_react_client():
 
 if __name__ == '__main__':
     
-    run_npm_install()
-    raise SystemExit(1)
+    # TODO: CLI input for which commands to run?
     
-    if not run_react_client():
+    if not run_react_client_with_install():
         print('React client failed to launch.')
         raise SystemExit(1)
     
