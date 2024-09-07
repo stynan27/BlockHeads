@@ -3,6 +3,7 @@ import subprocess
 
 ### GLOBAL SCOPED VARS
 SECONDS_BETWEEN_COMMANDS = 10
+BLOCKHEADS_JAR_NAME = 'BlockHeads-0.0.1-SNAPSHOT.jar'
 GLIBC_PRIVATE_ERROR = 'error: /snap/core20/current/lib/x86_64-linux-gnu/libpthread.so.0: \
     undefined symbol: __libc_pthread_init, version GLIBC_PRIVATE'
 
@@ -18,22 +19,13 @@ COMMANDS: dict = {
         'bash', 
         '-c'
     ],
-    "AND_IF": [
-        '&&'
-    ],
-    "SLEEP": [
-        'sleep',
-        str(SECONDS_BETWEEN_COMMANDS)
-    ],
-    "NPM_INSTALL": [ 
-        'npm',
-        'install' 
-    ],
-    "NPM_RUN_START": [ 
-        'npm',
-        'run',
-        'start'
-    ]
+    "AND_IF": ['&&'], # chain commands, unless they error
+    "SLEEP": ['sleep', str(SECONDS_BETWEEN_COMMANDS)],
+    "CLEAN_COMPILE": ['rm','-rf','target/'],
+    "MAVEN_COMPILE": ['mvn','install','package'],
+    "RUN_BACKEND_API": ["java", "-jar", "target/"+BLOCKHEADS_JAR_NAME],
+    "NPM_INSTALL": ['npm', 'install'],
+    "NPM_RUN_START": ['npm', 'run', 'start']
 }
 
 # generic method to handle method returns on error vs output
@@ -67,12 +59,29 @@ def run_command(cmd, cwd):
         )
     return handle_result(cmd, cwd, res)
 
+def build_and_run_backend():
+    print('Building Java Backend')
+    
+    sub_cmd = " ".join(
+        COMMANDS['CLEAN_COMPILE'] + \
+            COMMANDS['AND_IF'] + \
+                COMMANDS['MAVEN_COMPILE'] + \
+                    COMMANDS['AND_IF'] + \
+                        COMMANDS['SLEEP'] + \
+                            COMMANDS['AND_IF'] + \
+                                COMMANDS['RUN_BACKEND_API']
+    )                          
+    cmd = COMMANDS['NEW_TERMINAL'] + [sub_cmd]    
+    
+    return run_command(cmd, SPRING_API_PATH) 
+    
+
 # install react client packages
 def run_npm_install():
     print('Running npm install')
     
     # use "; exec bash" to keep terminal open after install
-    sub_cmd = " ".join(COMMANDS['NPM_INSTALL'] + ['; bash'] 
+    sub_cmd = " ".join(COMMANDS['NPM_INSTALL'] + ['; bash'])
     cmd = COMMANDS['NEW_TERMINAL'] + [sub_cmd]
     
     return run_command(cmd, REACT_CLIENT_PATH)
@@ -80,7 +89,7 @@ def run_npm_install():
 def run_react_client():
     print('Launching Blockheads React client')
     
-    sub_cmd = " ".join(COMMANDS['NPM_RUN_START']
+    sub_cmd = " ".join(COMMANDS['NPM_RUN_START'])
     cmd = COMMANDS['NEW_TERMINAL'] + [sub_cmd]
     
     return run_command(cmd, REACT_CLIENT_PATH)
@@ -88,17 +97,17 @@ def run_react_client():
 def run_react_client_with_install():
     print('Launching Blockheads React client')
 
-    sub_cmd = " ".join(COMMANDS['NPM_INSTALL'] + \
-        COMMANDS['AND_IF'] + \
-            COMMANDS['SLEEP'] + \
-                COMMANDS['AND_IF'] + \
-                    COMMANDS['NPM_RUN_START'])
+    sub_cmd = " ".join(
+        COMMANDS['NPM_INSTALL'] + \
+            COMMANDS['AND_IF'] + \
+                COMMANDS['SLEEP'] + \
+                    COMMANDS['AND_IF'] + \
+                        COMMANDS['NPM_RUN_START']
+    )
     cmd = COMMANDS['NEW_TERMINAL'] + [sub_cmd]
     
     return run_command(cmd, REACT_CLIENT_PATH)
 
-
-# TODO: method to run java app
 
 # TODO: method to run MySQL Docker image
 
@@ -108,6 +117,10 @@ def run_react_client_with_install():
 if __name__ == '__main__':
     
     # TODO: CLI input for which commands to run?
+    
+    if not build_and_run_backend():
+        print('Java backend failed to launch.')
+        raise SystemExit(1)
     
     if not run_react_client_with_install():
         print('React client failed to launch.')
