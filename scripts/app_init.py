@@ -60,7 +60,7 @@ def run_command(cmd, cwd):
     return handle_result(cmd, cwd, res)
 
 def build_and_run_backend():
-    print('Building Java Backend')
+    print('Building & running Java backend')
     
     sub_cmd = " ".join(
         COMMANDS['CLEAN_COMPILE'] + \
