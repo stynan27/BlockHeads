@@ -11,15 +11,21 @@ REACT_CLIENT_PATH = str(PROJECT_ROOT / 'react_client')
 SPRING_API_PATH = str(PROJECT_ROOT / 'spring_API')
 
 COMMANDS: dict = {
-    "NPM_RUN_START": [ 
+    "NEW_TERMINAL": [
         'gnome-terminal', # Launches new gnome-terminal for output logging
         '--', 
         'bash', 
-        '-c', 
+        '-c'
+    ],
+    "NPM_RUN_INSTALL": [ 
+        'npm install; exec bash' # use "; exec bash" to keep terminal open after install
+    ],
+    "NPM_RUN_START": [ 
         'npm run start'
     ]
 }
 
+# generic method to handle method returns on error vs output
 def handle_result(cmd, cwd, res):
     cmd_str = str(cmd)
     
@@ -41,7 +47,7 @@ def handle_result(cmd, cwd, res):
         print("Message: " + res.stdout)
         return True
     
-# Runs specified command (cmd) in the current working directory (cwd)    
+# runs specified command (cmd) in the current working directory (cwd)    
 def run_command(cmd, cwd):
     res = subprocess.run(cmd, \
             cwd=cwd, \
@@ -50,14 +56,15 @@ def run_command(cmd, cwd):
         )
     return handle_result(cmd, cwd, res)
 
+# install react client packages
 def run_npm_install():
     print('Running npm install')
-    cmd = COMMANDS['NPM_RUN_START']
+    cmd = COMMANDS['NEW_TERMINAL'] + COMMANDS['NPM_RUN_INSTALL']
     return run_command(cmd, REACT_CLIENT_PATH)
 
 def run_react_client():
     print('Launching Blockheads React client')
-    cmd = COMMANDS['NPM_RUN_START']
+    cmd = COMMANDS['NEW_TERMINAL'] + COMMANDS['NPM_RUN_START']
     return run_command(cmd, REACT_CLIENT_PATH)
 
 
@@ -70,7 +77,8 @@ def run_react_client():
 
 if __name__ == '__main__':
     
-    
+    run_npm_install()
+    raise SystemExit(1)
     
     if not run_react_client():
         print('React client failed to launch.')
