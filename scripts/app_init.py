@@ -40,18 +40,25 @@ def handle_result(cmd, cwd, res):
     else:
         print("Message: " + res.stdout)
         return True
-
-
-# TODO: method to run react app
-def run_react_client():
-    print('Launching Blockheads React client')
-    cmd = COMMANDS['NPM_RUN_START']
+    
+# Runs specified command (cmd) in the current working directory (cwd)    
+def run_command(cmd, cwd):
     res = subprocess.run(cmd, \
-            cwd=REACT_CLIENT_PATH, \
+            cwd=cwd, \
             capture_output=True, \
             text=True
         )
-    return handle_result(cmd, REACT_CLIENT_PATH, res)
+    return handle_result(cmd, cwd, res)
+
+def run_npm_install():
+    print('Running npm install')
+    cmd = COMMANDS['NPM_RUN_START']
+    return run_command(cmd, REACT_CLIENT_PATH)
+
+def run_react_client():
+    print('Launching Blockheads React client')
+    cmd = COMMANDS['NPM_RUN_START']
+    return run_command(cmd, REACT_CLIENT_PATH)
 
 
 # TODO: method to run java app
