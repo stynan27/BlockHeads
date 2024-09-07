@@ -26,9 +26,9 @@ def handle_result(cmd, cwd, res):
     print("Directory: " + cwd)
     
     if len(res.stderr) > 0:
-        if 'canberra-gtk-module' in res.stderr: # ignore, should still work properly
-            print('')
-            return True
+        #if 'canberra-gtk-module' in res.stderr: # ignore, should still work properly
+            #print('')
+            #return True
         print("Error: " + res.stderr)
         return False
     else:
@@ -61,5 +61,5 @@ if __name__ == '__main__':
     
     if not run_react_client():
         print('React client failed to launch.')
-        exit(-1)
+        raise SystemExit(1)
     print('Blockheads is up and running!')
