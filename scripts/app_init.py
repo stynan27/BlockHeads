@@ -161,42 +161,16 @@ def build_and_run_backend():
     
     return True
 
-# install react client packages
-def run_npm_install():
-    print('Running npm install')
-    
-    # use "; exec bash" to keep terminal open after install
-    sub_cmd = " ".join(COMMANDS['NPM_INSTALL'] + ['; bash'])
-    cmd = COMMANDS['NEW_TERMINAL'] + [sub_cmd]
-    
-    return run_command(cmd, REACT_CLIENT_PATH)
-
-def run_react_client():
-    print('Launching React client')
-    
-    sub_cmd = " ".join(COMMANDS['NPM_RUN_START'])
-    cmd = COMMANDS['NEW_TERMINAL'] + [sub_cmd]
-    
-    return run_command(cmd, REACT_CLIENT_PATH)
-
 def run_react_client_with_install():
     print('Launching React client')
 
-    sub_cmd = " ".join(
-        COMMANDS['NPM_INSTALL'] + \
-            COMMANDS['AND_IF'] + \
-                COMMANDS['SLEEP'] + \
-                    COMMANDS['AND_IF'] + \
-                        COMMANDS['NPM_RUN_START']
-    )
-    cmd = COMMANDS['NEW_TERMINAL'] + [sub_cmd]
+    if not run_command_in_terminal(COMMANDS['NPM_INSTALL'], REACT_CLIENT_PATH, 'up to date,'):
+        return False
+
+    if not run_command_in_terminal(COMMANDS['NPM_RUN_START'], REACT_CLIENT_PATH, 'Compiled successfully!'):
+        return False
     
-    return run_command(cmd, REACT_CLIENT_PATH)
-
-
-# TODO: method to run MySQL Docker image
-
-# TODO: method to populate MySQL with init.sql data
+    return True
 
 
 if __name__ == '__main__':
@@ -205,7 +179,11 @@ if __name__ == '__main__':
         print('Setup failed.')
         raise SystemExit(1)
     
-    # TODO: run each of the following as a separate process
+    # TODO: run each of the following as a separate process to speed-up
+    
+    # TODO: method to run MySQL Docker image
+    
+    # TODO: method to populate MySQL with init.sql data
     
     if not build_and_run_backend():
         print('Java backend failed to launch.')
@@ -214,3 +192,5 @@ if __name__ == '__main__':
     # if not run_react_client_with_install():
     #     print('React client failed to launch.')
     #     raise SystemExit(1)
+    
+    print('Blockheads is up and running!')
