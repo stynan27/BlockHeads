@@ -38,8 +38,8 @@ COMMANDS: dict = {
     ],
     "AND_IF": ['&&'], # chain commands, unless they error
     "SLEEP": ['sleep', str(SECONDS_BETWEEN_COMMANDS)], # wait specified number of seconds
-    "CLEAN_BACKEND_OUTPUTS": ['rm','-f', TMP_BACKEND_OUTPUT_FILE_NAME],
-    "CLEAN_REACT_OUTPUTS": ['rm','-f', TMP_REACT_OUTPUT_FILE_NAME],
+    "CLEAN_BACKEND_OUTPUT": ['rm','-f', TMP_BACKEND_OUTPUT_FILE_NAME],
+    "CLEAN_REACT_OUTPUT": ['rm','-f', TMP_REACT_OUTPUT_FILE_NAME],
     "CLEAN_COMPILE": ['rm','-rf','target/'],
     "MAVEN_COMPILE": ['mvn','install','package'],
     "RUN_BACKEND_API": ["java", "-jar", "target/"+BLOCKHEADS_JAR_NAME],
@@ -48,10 +48,10 @@ COMMANDS: dict = {
 }
 
 def setup():
-    if not run_command_no_terminal(COMMANDS['CLEAN_BACKEND_OUTPUTS'], '/tmp/'):
+    if not run_command_no_terminal(COMMANDS['CLEAN_BACKEND_OUTPUT'], '/tmp/'):
         return False
     
-    if not run_command_no_terminal(COMMANDS['CLEAN_REACT_OUTPUTS'], '/tmp/'):
+    if not run_command_no_terminal(COMMANDS['CLEAN_REACT_OUTPUT'], '/tmp/'):
         return False
     
     return True
