@@ -1,9 +1,14 @@
+import os
+import time
+from datetime import datetime
 from pathlib import Path
 import subprocess
 
 ### GLOBAL SCOPED VARS
 SECONDS_BETWEEN_COMMANDS = 10
 BLOCKHEADS_JAR_NAME = 'BlockHeads-0.0.1-SNAPSHOT.jar'
+TMP_BACKEND_OUTPUT_FILE_NAME = 'app_init_backend_output.txt'
+TMP_REACT_OUTPUT_FILE_NAME = 'app_init_react_output.txt'
 GLIBC_PRIVATE_ERROR = 'error: /snap/core20/current/lib/x86_64-linux-gnu/libpthread.so.0: \
     undefined symbol: __libc_pthread_init, version GLIBC_PRIVATE'
 
@@ -19,8 +24,22 @@ COMMANDS: dict = {
         'bash', 
         '-c'
     ],
+    "RECORD_BACKEND_OUTPUT": [
+        '|',
+        'tee',
+        '/tmp/' + TMP_BACKEND_OUTPUT_FILE_NAME + ';',
+        "bash" # keep terminal open
+    ],
+    "RECORD_REACT_OUTPUT": [
+        '|',
+        'tee',
+        '/tmp/' + TMP_REACT_OUTPUT_FILE_NAME + ';',
+        "bash" # keep terminal open
+    ],
     "AND_IF": ['&&'], # chain commands, unless they error
-    "SLEEP": ['sleep', str(SECONDS_BETWEEN_COMMANDS)],
+    "SLEEP": ['sleep', str(SECONDS_BETWEEN_COMMANDS)], # wait specified number of seconds
+    "CLEAN_BACKEND_OUTPUTS": ['rm','-f', TMP_BACKEND_OUTPUT_FILE_NAME],
+    "CLEAN_REACT_OUTPUTS": ['rm','-f', TMP_REACT_OUTPUT_FILE_NAME],
     "CLEAN_COMPILE": ['rm','-rf','target/'],
     "MAVEN_COMPILE": ['mvn','install','package'],
     "RUN_BACKEND_API": ["java", "-jar", "target/"+BLOCKHEADS_JAR_NAME],
@@ -28,18 +47,31 @@ COMMANDS: dict = {
     "NPM_RUN_START": ['npm', 'run', 'start']
 }
 
+def setup():
+    if not run_command_no_terminal(COMMANDS['CLEAN_BACKEND_OUTPUTS'], '/tmp/'):
+        return False
+    
+    if not run_command_no_terminal(COMMANDS['CLEAN_REACT_OUTPUTS'], '/tmp/'):
+        return False
+    
+    return True
+    
+
 # generic method to handle method returns on error vs output
-def handle_result(cmd, cwd, res):
+def handle_result(cmd, cwd, res=None, stdout='', stderr=''):
     cmd_str = str(cmd)
     
-    print("Ran command: " + cmd_str)
+    print("Command: " + cmd_str)
     print("Directory: " + cwd)
     
-    if len(res.stderr) > 0:
-        if 'canberra-gtk-module' in res.stderr: # ignore, should still work properly
-            print('')
+    if res is not None:
+        stdout = res.stdout
+        stderr = res.stderr
+    
+    if len(stderr) > 0:
+        if 'canberra-gtk-module' in stderr: # ignore, should still work properly
             return True
-        print("Error: " + res.stderr)
+        print("Error: " + stderr)
         
         # https://github.com/ros2/ros2/issues/1406
         print('\nNOTE - If received the following error:')
@@ -47,34 +79,87 @@ def handle_result(cmd, cwd, res):
         print('Run: "unset GTK_PATH" command first\n\n')
         return False
     else:
-        print("Message: " + res.stdout)
+        if len(stdout) > 0:
+            print("Message: " + stdout)
+        else:
+            print("Success!\n")
         return True
+
     
-# runs specified command (cmd) in the current working directory (cwd)    
-def run_command(cmd, cwd):
+# runs specified command (cmd) in the current working directory (cwd) on a new terminal
+def run_command_in_terminal(cmd, cwd, cmd_success_msg):
+    
+    if SPRING_API_PATH in cwd:
+        record_cmd = COMMANDS['RECORD_BACKEND_OUTPUT']
+        filename = TMP_BACKEND_OUTPUT_FILE_NAME
+    else:
+        record_cmd = COMMANDS['RECORD_REACT_OUTPUT']
+        filename = TMP_REACT_OUTPUT_FILE_NAME
+    
+    # Run the specified cmd in a new terminal 
+    # and record the output in a /tmp/ file to check
+    sub_cmd = " ".join(
+        cmd + record_cmd
+    )             
+    cmd = COMMANDS['NEW_TERMINAL'] + [sub_cmd]    
+    
     res = subprocess.run(cmd, \
-            cwd=cwd, \
-            capture_output=True, \
-            text=True
-        )
-    return handle_result(cmd, cwd, res)
+        cwd=cwd, \
+        capture_output=True, \
+        text=True
+    )
+    if not handle_result(cmd, cwd, res):
+        return False
+    
+    time.sleep(5) # wait for write to commence 
+    
+    
+    file = "/tmp/" + filename
+    
+    # wait for writes to complete
+    seconds_since_last_write = 0
+    while seconds_since_last_write <= 2:
+        try:
+            mod_time = datetime.fromtimestamp(os.path.getmtime(file))
+            current_time = datetime.now()
+            seconds_since_last_write = int((current_time - mod_time).total_seconds())
+            
+        except FileNotFoundError:
+            # File doesn't exist yet; wait and try again
+            time.sleep(1) 
+            
+    # Now that file is fully written, read output to find cmd_success_msg
+    with open(file, "r") as file:
+        contents = file.read()
+        if cmd_success_msg in contents:
+            print('Success!\n')
+            return True
+        else:  
+            return False
+
+# runs specified command (cmd) in the current working directory (cwd) - takes little time to complete
+def run_command_no_terminal(cmd, cwd):
+    # runs command without creating a pipe for monitoring process
+    res = subprocess.run(cmd, \
+        cwd=cwd, \
+        capture_output=True, \
+        text=True
+    )
+    return handle_result(cmd, cwd, res=res)
 
 def build_and_run_backend():
     print('Building & running Java backend')
     
-    sub_cmd = " ".join(
-        COMMANDS['CLEAN_COMPILE'] + \
-            COMMANDS['AND_IF'] + \
-                COMMANDS['MAVEN_COMPILE'] + \
-                    COMMANDS['AND_IF'] + \
-                        COMMANDS['SLEEP'] + \
-                            COMMANDS['AND_IF'] + \
-                                COMMANDS['RUN_BACKEND_API']
-    )                          
-    cmd = COMMANDS['NEW_TERMINAL'] + [sub_cmd]    
+    if not run_command_no_terminal(COMMANDS['CLEAN_COMPILE'], SPRING_API_PATH):
+        return False
     
-    return run_command(cmd, SPRING_API_PATH) 
+    if not run_command_in_terminal(COMMANDS['MAVEN_COMPILE'], SPRING_API_PATH, 'BUILD SUCCESS'):
+        return False
+
+    if not run_command_in_terminal(COMMANDS['RUN_BACKEND_API'], SPRING_API_PATH, 'Tomcat started on port(s):'):
+        return False
     
+    return True
 
 # install react client packages
 def run_npm_install():
@@ -87,7 +172,7 @@ def run_npm_install():
     return run_command(cmd, REACT_CLIENT_PATH)
 
 def run_react_client():
-    print('Launching Blockheads React client')
+    print('Launching React client')
     
     sub_cmd = " ".join(COMMANDS['NPM_RUN_START'])
     cmd = COMMANDS['NEW_TERMINAL'] + [sub_cmd]
@@ -95,7 +180,7 @@ def run_react_client():
     return run_command(cmd, REACT_CLIENT_PATH)
 
 def run_react_client_with_install():
-    print('Launching Blockheads React client')
+    print('Launching React client')
 
     sub_cmd = " ".join(
         COMMANDS['NPM_INSTALL'] + \
@@ -116,14 +201,16 @@ def run_react_client_with_install():
 
 if __name__ == '__main__':
     
-    # TODO: CLI input for which commands to run?
+    if not setup():
+        print('Setup failed.')
+        raise SystemExit(1)
+    
+    # TODO: run each of the following as a separate process
     
     if not build_and_run_backend():
         print('Java backend failed to launch.')
         raise SystemExit(1)
     
-    if not run_react_client_with_install():
-        print('React client failed to launch.')
-        raise SystemExit(1)
-    
-    print('Blockheads is up and running!')
+    # if not run_react_client_with_install():
+    #     print('React client failed to launch.')
+    #     raise SystemExit(1)
