@@ -203,7 +203,22 @@ def run_and_populate_mysql():
             return False
      
     # TODO: Populate initial SQL
+    # 1. enter container CLI - `docker exec -it blockheads-mysql bash`
+    # 2. enter MySQL CLI as root user - `mysql -u root -pdummypassword`
+    # 3. `use blockheads-database`
+    # 4. `sql`
+    # 5. `insert sfsdf`
+    # 6. `commit;` ?
+    # 7. `quit`
+    # 8. `exit`
     
+    # OR - https://stackoverflow.com/questions/29145370/how-can-i-initialize-a-mysql-database-with-schema-in-a-docker-container
+    # Easier with docker-compose
+    
+    # Create initial data in DB with postman
+    # Then export to a .sql like:
+    # mysqldump -h <your_mysql_host> -u <user_name> -p --no-data <schema_name> > schema.sql
+    # can then import via Dockerfile example above
     
     return True
 
@@ -234,11 +249,13 @@ def run_react_client_with_install():
 
 
 if __name__ == '__main__':
+    # TODO: CLI arg for skipping build and install steps
+    # --no-build or --no-maven-build
+    # --no-install or --no-npm-install
     
     if not setup():
         print('Setup failed.')
         raise SystemExit(1)
-    
     
     # Threads are efficient for concurrent I/O based tasks (writing files)
     with ThreadPoolExecutor() as executor:
