@@ -76,6 +76,11 @@ def setup():
     if not run_command_no_terminal(COMMANDS['CLEAN_REACT_OUTPUT'], '/tmp/'):
         return False
     
+    # unset GTK_PATH if present
+    # https://github.com/ros2/ros2/issues/1406
+    if 'GTK_PATH' in os.environ:
+        del os.environ['GTK_PATH']
+    
     return True
     
 
@@ -93,16 +98,12 @@ def handle_result(cmd, cwd, cmd_success_msg=None, res=None):
                 '\nDirectory: ' + cwd +
                 '\nCommand started.\n'
             )
-            return True
+            return True      
+            
         print("Command: " + str(cmd) +  
             '\nDirectory: ' + cwd +
             '\nError: ' + stderr + '\n'
         )
-        
-        # https://github.com/ros2/ros2/issues/1406
-        print('\nNOTE - If received the following error:')
-        print(GLIBC_PRIVATE_ERROR)
-        print('Run: "unset GTK_PATH" command first\n\n')
         return False
     else:
         if cmd_success_msg is not None and \
@@ -217,7 +218,7 @@ def run_and_populate_mysql():
     
     # Create initial data in DB with postman
     # Then export to a .sql like:
-    # mysqldump -h <your_mysql_host> -u <user_name> -p --no-data <schema_name> > schema.sql
+    # mysqldump -h <your_mysql_host> -u <user_name> -p <schema_name> > schema.sql
     # can then import via Dockerfile example above
     
     return True
@@ -257,17 +258,18 @@ if __name__ == '__main__':
         print('Setup failed.')
         raise SystemExit(1)
     
-    # Threads are efficient for concurrent I/O based tasks (writing files)
+    # Threads are efficient for concurrent I/O based tasks (writing files) 
+    # TODO: - Use Processes instead?? Threading doesn't actually work in Python due to GIL locking
     with ThreadPoolExecutor() as executor:
-        run_mysql_future = executor.submit(run_and_populate_mysql)
+        #run_mysql_future = executor.submit(run_and_populate_mysql)
         run_backend_future = executor.submit(build_and_run_backend)
         run_react_future = executor.submit(run_react_client_with_install)
     
     # blocking call - halts execution until result returns here
-    mysql_valid_result = run_mysql_future.result() 
-    if not mysql_valid_result:
-        print('MySQL launch & populate task failed.\n')
-        raise SystemExit(1)
+    # mysql_valid_result = run_mysql_future.result() 
+    # if not mysql_valid_result:
+    #     print('MySQL launch & populate task failed.\n')
+    #     raise SystemExit(1)
 
     backend_valid_result = run_backend_future.result() 
     if not backend_valid_result:
