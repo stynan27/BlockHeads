@@ -8,16 +8,16 @@ from concurrent.futures import ThreadPoolExecutor
 ### GLOBAL SCOPED VARS
 MAX_TERMINAL_LAUNCH_SECONDS = 5
 MAX_CONSECUTIVE_FWRITES_SECONDS = 10
+BLOCKHEADS_MYSQL_IMG_NAME = 'blockheads-mysql'
 BLOCKHEADS_JAR_NAME = 'BlockHeads-0.0.1-SNAPSHOT.jar'
 TMP_BACKEND_OUTPUT_FILE_NAME = 'app_init_backend_output.txt'
 TMP_REACT_OUTPUT_FILE_NAME = 'app_init_react_output.txt'
-GLIBC_PRIVATE_ERROR = 'error: /snap/core20/current/lib/x86_64-linux-gnu/libpthread.so.0: \
-    undefined symbol: __libc_pthread_init, version GLIBC_PRIVATE'
 
 # PATHS
 PROJECT_ROOT = Path(__file__).absolute().parent.parent # Blockheads project root
 REACT_CLIENT_PATH = str(PROJECT_ROOT / 'react_client')
 SPRING_API_PATH = str(PROJECT_ROOT / 'spring_API')
+DOCKER_PATH = str(PROJECT_ROOT / 'docker')
 
 COMMANDS: dict = {
     "NEW_TERMINAL": [
@@ -25,6 +25,28 @@ COMMANDS: dict = {
         '--', 
         'bash', 
         '-c'
+    ],
+    "DOCKER_PS": ['docker', 'ps'],
+    "DOCKER_BUILD_MYSQL": [
+        'docker', 
+        'build',
+        '--no-cache',
+        '-t',
+        'blockheads-mysql',
+        '-f',
+        'blockheads-mysql.Dockerfile',
+        '.'
+    ],
+    "DOCKER_RUN_MYSQL": [
+        'docker', 
+        'run',
+        '--detach',
+        '--restart=always',
+        '--name',
+        'blockheads-mysql',
+        '--publish',
+        '3306:3306',
+        'blockheads-mysql'
     ],
     "RECORD_BACKEND_OUTPUT": [
         '|',
@@ -37,26 +59,6 @@ COMMANDS: dict = {
         'tee',
         '/tmp/' + TMP_REACT_OUTPUT_FILE_NAME + ';',
         "bash" # keep terminal open
-    ],
-    "DOCKER_PS": ['docker', 'ps'],
-    "DOCKER_RUN_MYSQL": [
-        'docker', 
-        'run',
-        '--detach',
-        '--restart=always',
-        '--env',
-        'MYSQL_ROOT_PASSWORD=dummypassword',
-        '--env',
-        'MYSQL_USER=blockheads-developer',
-        '--env',
-        'MYSQL_PASSWORD=dummypassword',
-        '--env',
-        'MYSQL_DATABASE=blockheads-database',
-        '--name',
-        'blockheads-mysql',
-        '--publish',
-        '3306:3306',
-        'mysql:8-oracle'
     ],
     "CLEAN_BACKEND_OUTPUT": ['rm','-f', TMP_BACKEND_OUTPUT_FILE_NAME],
     "CLEAN_REACT_OUTPUT": ['rm','-f', TMP_REACT_OUTPUT_FILE_NAME],
@@ -93,7 +95,9 @@ def handle_result(cmd, cwd, cmd_success_msg=None, res=None):
         stderr = res.stderr
     
     if len(stderr) > 0:
-        if 'canberra-gtk-module' in stderr: # ignore, should still work properly
+        # ignore, should still work properly
+        if 'canberra-gtk-module' in stderr \
+            or '#0 building with "default" instance using docker driver' in stderr: 
             print("Command: " + str(cmd) +  
                 '\nDirectory: ' + cwd +
                 '\nCommand started.\n'
@@ -191,35 +195,34 @@ def run_command_no_terminal(cmd, cwd, cmd_success_msg=None):
 def run_and_populate_mysql():
     print('Running and populating MySQL database\n')
     
+    
+    # TODO: Force build input arg to override this?
     run_mysql = True
-    if run_command_no_terminal(COMMANDS['DOCKER_PS'], '.', 'mysql:8-oracle'):
+    if run_command_no_terminal(COMMANDS['DOCKER_PS'], '.', BLOCKHEADS_MYSQL_IMG_NAME):
         run_mysql = False
     
     if run_mysql:
+        if not run_command_no_terminal(COMMANDS['DOCKER_BUILD_MYSQL'], DOCKER_PATH, '#7 DONE'):
+            return False
+        
         if not run_command_no_terminal(COMMANDS['DOCKER_RUN_MYSQL'], '.'):
             return False
     
         # Ensure MySQL is up after running
-        if not run_command_no_terminal(COMMANDS['DOCKER_PS'], '.', 'mysql:8-oracle'):
+        if not run_command_no_terminal(COMMANDS['DOCKER_PS'], '.', BLOCKHEADS_MYSQL_IMG_NAME):
             return False
      
     # TODO: Populate initial SQL
-    # 1. enter container CLI - `docker exec -it blockheads-mysql bash`
-    # 2. enter MySQL CLI as root user - `mysql -u root -pdummypassword`
-    # 3. `use blockheads-database`
-    # 4. `sql`
-    # 5. `insert sfsdf`
-    # 6. `commit;` ?
-    # 7. `quit`
-    # 8. `exit`
-    
-    # OR - https://stackoverflow.com/questions/29145370/how-can-i-initialize-a-mysql-database-with-schema-in-a-docker-container
-    # Easier with docker-compose
+    # https://stackoverflow.com/questions/29145370/how-can-i-initialize-a-mysql-database-with-schema-in-a-docker-container
     
     # Create initial data in DB with postman
     # Then export to a .sql like:
     # mysqldump -h <your_mysql_host> -u <user_name> -p <schema_name> > schema.sql
     # can then import via Dockerfile example above
+    
+    # How-to build & run custom Dockerfile
+    # docker build --no-cache -t blockheads-mysql -f blockheads-mysql.Dockerfile .
+    # docker run --detach --restart=always --publish 3306:3306 blockheads-mysql:latest
     
     return True
 
@@ -258,19 +261,17 @@ if __name__ == '__main__':
         print('Setup failed.')
         raise SystemExit(1)
     
+    if not run_and_populate_mysql():
+        print('MySQL launch & populate task failed.\n')
+        raise SystemExit(1)
+    
     # Threads are efficient for concurrent I/O based tasks (writing files) 
     # TODO: - Use Processes instead?? Threading doesn't actually work in Python due to GIL locking
     with ThreadPoolExecutor() as executor:
-        #run_mysql_future = executor.submit(run_and_populate_mysql)
         run_backend_future = executor.submit(build_and_run_backend)
         run_react_future = executor.submit(run_react_client_with_install)
     
     # blocking call - halts execution until result returns here
-    # mysql_valid_result = run_mysql_future.result() 
-    # if not mysql_valid_result:
-    #     print('MySQL launch & populate task failed.\n')
-    #     raise SystemExit(1)
-
     backend_valid_result = run_backend_future.result() 
     if not backend_valid_result:
         print('Java backend build & launch task failed.\n')
