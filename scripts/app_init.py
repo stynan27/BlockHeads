@@ -211,18 +211,6 @@ def run_and_populate_mysql():
         # Ensure MySQL is up after running
         if not run_command_no_terminal(COMMANDS['DOCKER_PS'], '.', BLOCKHEADS_MYSQL_IMG_NAME):
             return False
-     
-    # TODO: Populate initial SQL
-    # https://stackoverflow.com/questions/29145370/how-can-i-initialize-a-mysql-database-with-schema-in-a-docker-container
-    
-    # Create initial data in DB with postman
-    # Then export to a .sql like:
-    # mysqldump -h <your_mysql_host> -u <user_name> -p <schema_name> > schema.sql
-    # can then import via Dockerfile example above
-    
-    # How-to build & run custom Dockerfile
-    # docker build --no-cache -t blockheads-mysql -f blockheads-mysql.Dockerfile .
-    # docker run --detach --restart=always --publish 3306:3306 blockheads-mysql:latest
     
     return True
 
